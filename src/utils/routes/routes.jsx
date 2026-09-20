@@ -1,24 +1,35 @@
 import React from 'react';
-import { Routes,Route } from 'react-router-dom';
-import Signup from '../../pages/signup/signup';
-import Login from '../../pages/login/login';
-import UserDashboard from '../../pages/userDashboard/userDashboard';
-import AdminDashboard from '../../pages/adminDashboard/adminDashboard';
+import { Routes, Route } from 'react-router-dom';
+import Signup from '../../pages/auth/signup';
+import Login from '../../pages/auth/login';
+import AdminDashboard from '../../pages/admin/adminDashboard';
+import UserDashboard from '../../pages/user/userDashboard';
+import CookieGuard from '../../pages/guards/cookiesGuards';
 
 const AppRoutes = () => {
   return (
-    <div>
-   <Routes>
-    <Route path='/' element={<Signup/>}/>
-    <Route path='/login' element = {<Login/>}/>
+    <Routes>
+      <Route path="/" element={<Signup />} />
+      <Route path="/login" element={<Login />} />
 
-    <Route path='/userDashboard' element={<UserDashboard/>}/>
-    <Route path='/adminDashboard' element={<AdminDashboard/>}/>
-  
+      <Route
+        path="/userDashboard"
+        element={
+          <CookieGuard role="user">
+            <UserDashboard />
+          </CookieGuard>
+        }
+      />
+      <Route
+        path="/adminDashboard"
+        element={
+          <CookieGuard role="admin">
+            <AdminDashboard />
+          </CookieGuard>
+        }
+      />
+    </Routes>
+  );
+};
 
-   </Routes>
-    </div>
-  )
-}
-
-export default AppRoutes
+export default AppRoutes;
