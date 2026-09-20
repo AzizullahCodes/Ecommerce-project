@@ -35,7 +35,7 @@ const Login = () => {
     setCookie(
       'myApp_login',
       { name: foundUser.name, email: foundUser.email, role: foundUser.role },
-      { path: '/', maxAge: 60 }
+      { path: '/', maxAge: 60 * 30}
     );
 
     navigate(foundUser.role === 'admin' ? '/adminDashboard' : '/userDashboard');

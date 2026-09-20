@@ -1,38 +1,44 @@
-// Cookie expiry + role check. Cookie na ho ya role match na kare to /login pe redirect.
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Cookies } from 'react-cookie';
 
 const cookies = new Cookies();
 
-const hasAccess = (cookieName, role) => {
-  const session = cookies.get(cookieName);
-  return Boolean(session) && (!role || session.role === role);
-};
+// Cookie ka naam wahi hona chahiye jo login.jsx mein setCookie mein hai
+const COOKIE_NAME = 'myApp_login';
 
 // Use: <CookieGuard role="admin"> ... </CookieGuard>
-const CookieGuard = ({ cookieName = 'myApp_login', role, children }) => {
+const CookieGuard = ({ role, children }) => {
   const navigate = useNavigate();
-  const [allowed, setAllowed] = useState(() => hasAccess(cookieName, role));
+
+  // Shuru mein false: jab tak check na ho, page nahi dikhega
+  const [allowed, setAllowed] = useState(false);
 
   useEffect(() => {
-    const check = () => {
-      const ok = hasAccess(cookieName, role);
-      setAllowed(ok);
-      if (!ok) navigate('/login', { replace: true });
+    const checkLogin = () => {
+      // Cookie se logged-in user nikalo (login ke waqt {name, email, role} save hua tha)
+      const user = cookies.get(COOKIE_NAME);
+
+      if (user && user.role === role) {
+        // Cookie hai aur role match karta hai -> page dikhao
+        setAllowed(true);
+      } else {
+        // Cookie nahi hai (logout / expire) ya role galat hai -> login page bhejo
+        setAllowed(false);
+        navigate('/login', { replace: true }); // replace: back button se wapas nahi aayega
+      }
     };
 
-    check(); // mount par turant check
-    const id = setInterval(check, 1000); // har second check (expiry ke liye)
-    window.addEventListener('focus', check); // tab wapas khulne par check
+    checkLogin(); // page khulte hi ek baar check
 
-    return () => {
-      clearInterval(id);
-      window.removeEventListener('focus', check);
-    };
-  }, [navigate, cookieName, role]);
+    // Har 1 second baad dobara check, taake cookie expire hote hi user login pe chala jaye
+    const timerId = setInterval(checkLogin, 1000);
 
-  // Access na ho to protected content render hi nahi hota (flash nahi)
+    // Page band hone par timer band kar do
+    return () => clearInterval(timerId);
+  }, [navigate, role]);
+
+  // allowed true ho tabhi andar ka page (children) dikhao
   return allowed ? children : null;
 };
 
