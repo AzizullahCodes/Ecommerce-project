@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-import './Login.css';
+
+import Cookies from 'js-cookie';
+import './login.css';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  const [, setCookie] = useCookies(['myApp_login']);
+
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -23,20 +24,28 @@ const Login = () => {
     const foundUser = users.find(
       (item) => item.email?.toLowerCase() === cleanEmail && item.password === password
     );
+    console.log(foundUser)
 
     if (!foundUser) {
       alert('invalid email or password');
       return;
     }
-
+//make an object for storing cookie 
+let obj = {
+    name : foundUser.name,
+    email: foundUser.email,
+    role : foundUser.role
+}
+console.log(obj)
     alert('you have logged in successfully');
 
-    // maxAge 60 sec testing ke liye hai. Real use mein 60 * 60 * 24 (1 din) rakho.
-    setCookie(
-      'myApp_login',
-      { name: foundUser.name, email: foundUser.email, role: foundUser.role },
-      { path: '/', maxAge: 60 * 30}
-    );
+    // // maxAge 60 sec testing ke liye hai. Real use mein 60 * 60 * 24 (1 din) rakho.
+    // setCookie(
+    //   'myApp_login',
+    //   { name: foundUser.name, email: foundUser.email, role: foundUser.role },
+    //   { path: '/', maxAge: 60 * 30}
+    // );
+    Cookies.set('myApp_login', JSON.stringify(obj), { expires: 7, path: '/' });
 
     navigate(foundUser.role === 'admin' ? '/adminDashboard' : '/userDashboard');
   };
