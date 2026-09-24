@@ -1,33 +1,33 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import Signup from '../../pages/auth/signup';
-import Login from '../../pages/auth/login';
-import AdminDashboard from '../../pages/admin/adminDashboard';
-import UserDashboard from '../../pages/user/userDashboard';
-import CookieGuard from '../../pages/guards/cookiesGuards';
+import React from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+
+import Signup from "../../pages/auth/signup/signup";
+import Login from "../../pages/auth/login/login";
+
+import AdminDashboard from "../../pages/admin/adminDashboard";
+import UserDashboard from "../../pages/user/userDashboard/userDashboard";
+
+import PublicRoutes from "../publicRoutes/publicRoutes";
+import ProtectedRoutes from "../protectedRotues/protectedRoutes";
 
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
+      {/* Public Routes */}
+      <Route element={<PublicRoutes />}>
+        <Route path="/" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+      </Route>
 
-      <Route
-        path="/userDashboard"
-        element={
-          <CookieGuard role="user">
-            <UserDashboard />
-          </CookieGuard>
-        }
-      />
-      <Route
-        path="/adminDashboard"
-        element={
-          <CookieGuard role="admin">
-            <AdminDashboard />
-          </CookieGuard>
-        }
-      />
+      {/* Protected Routes */}
+      <Route element={<ProtectedRoutes />}>
+        <Route path="/adminDashboard" element={<AdminDashboard />} />
+
+        <Route path="/userDashboard" element={<UserDashboard />} />
+      </Route>
+
+      {/* Catch All Routes */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
