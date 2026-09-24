@@ -3,14 +3,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './userDashboard.css';
 
-<<<<<<< HEAD
 import { useAuth } from '../../../context/authContext/authContext';
 const UserDashboard = () => {
   const {user} = useAuth();
   console.log('user is fetch via context api....', user)
-=======
-const UserDashboard = () => {
->>>>>>> 3636894ff8b7a544a0ecf944601945839865ab77
   const orders = [
     {
       id: '#ORD-1001',
