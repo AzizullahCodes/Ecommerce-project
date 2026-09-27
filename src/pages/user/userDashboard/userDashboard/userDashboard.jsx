@@ -1,117 +1,88 @@
 import React from "react";
-import AdminSidebar from "../../../components/adminSidebar/AdminSidebar";
-import "./AdminDashboard.css";
+import UserSidebar from "../../../../components/userSidebar/userSidebar";
+import "./userDashboard.css";
+import { useAuth } from "../../../../context/authContext/authContext";
 
-const AdminDashboard = () => {
+const UserDashboard = () => {
+    const {user} = useAuth()
+    console.log(user)
   return (
-    <div className="admin-layout">
+    <div className="user-layout">
+      <UserSidebar />
 
-      <AdminSidebar />
-
-      <main className="admin-main">
-
+      <main className="user-main">
         <div className="dashboard-header">
           <div>
-            <h1>Admin Dashboard</h1>
-            <p>Welcome back, Admin</p>
+            <h1>User Dashboard</h1>
+            <p>Welcome back, User</p>
           </div>
 
-          <div className="admin-profile">
-            <div className="profile-avatar">
-              A
-            </div>
+          <div className="user-profile">
+            <div className="profile-avatar">U</div>
 
             <div>
-              <strong>Admin</strong>
-              <span>Administrator</span>
+              <strong>User Name</strong>
+              <span>Customer</span>
             </div>
           </div>
         </div>
 
-
         {/* Statistics */}
-
         <div className="dashboard-cards">
-
-          <div className="dashboard-card">
-            <div>
-              <p>Total Products</p>
-              <h2>1,248</h2>
-            </div>
-
-            <div className="card-icon">
-              📦
-            </div>
-          </div>
-
-
-          <div className="dashboard-card">
-            <div>
-              <p>Total Users</p>
-              <h2>8,540</h2>
-            </div>
-
-            <div className="card-icon">
-              👥
-            </div>
-          </div>
-
-
           <div className="dashboard-card">
             <div>
               <p>Total Orders</p>
-              <h2>3,245</h2>
+              <h2>12</h2>
             </div>
-
-            <div className="card-icon">
-              🛒
-            </div>
+            <div className="card-icon">📦</div>
           </div>
-
 
           <div className="dashboard-card">
             <div>
-              <p>Total Revenue</p>
-              <h2>$48,250</h2>
+              <p>Wishlist Items</p>
+              <h2>5</h2>
             </div>
-
-            <div className="card-icon">
-              💰
-            </div>
+            <div className="card-icon">❤️</div>
           </div>
 
+          <div className="dashboard-card">
+            <div>
+              <p>Cart Items</p>
+              <h2>3</h2>
+            </div>
+            <div className="card-icon">🛒</div>
+          </div>
+
+          <div className="dashboard-card">
+            <div>
+              <p>Reviews Given</p>
+              <h2>7</h2>
+            </div>
+            <div className="card-icon">⭐</div>
+          </div>
         </div>
 
-
         {/* Bottom Section */}
-
         <div className="dashboard-grid">
-
           <div className="dashboard-panel">
             <h3>Recent Orders</h3>
-
             <div className="empty-content">
               <span>📋</span>
               <p>Recent orders will appear here</p>
             </div>
           </div>
 
-
           <div className="dashboard-panel">
             <h3>Recent Reviews</h3>
-
             <div className="empty-content">
               <span>⭐</span>
               <p>Recent reviews will appear here</p>
             </div>
           </div>
-
         </div>
-
       </main>
-
     </div>
   );
 };
 
-export default AdminDashboard;
+export default UserDashboard;

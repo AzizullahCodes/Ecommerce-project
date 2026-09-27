@@ -4,8 +4,13 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import Signup from "../../pages/auth/signup/signup";
 import Login from "../../pages/auth/login/login";
 
-import AdminDashboard from "../../pages/admin/adminDashboard";
-import UserDashboard from "../../pages/user/userDashboard/userDashboard";
+// import AdminDashboard from "../../pages/admin/adminDashboard";
+// import AdminDashboard from "../../pages/admin/dashboard/AdminDashboard"; 
+import UserDashboard from "../../pages/user/userDashboard/userDashboard/userDashboard";
+import AdminDashboard from "../../pages/admin/dashboard/adminDashboard/adminDashboard";
+
+// import AdminDashboard from "../../pages/admin/adminDashboard";
+// import UserDashboard from "../../pages/user/userDashboard/userDashboard";
 
 import PublicRoutes from "../publicRoutes/publicRoutes";
 import ProtectedRoutes from "../protectedRotues/protectedRoutes";
