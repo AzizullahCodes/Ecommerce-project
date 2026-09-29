@@ -1,155 +1,125 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Layout: left me sidebar, right me content */
 .user-layout {
   display: flex;
   min-height: 100vh;
-  background: #f5f6fa;
+  background: #f3f4f6;
 }
 
+/* Sidebar ke liye 250px ki jagah reserve */
+.user-sidebar-wrapper {
+  width: 250px;
+  flex-shrink: 0;
+}
+
+/* Sidebar hamesha wrapper ke andar rahe, scroll par bhi upar chipki rahe */
+.user-sidebar-wrapper .user-sidebar {
+  position: sticky;
+  top: 0;
+  width: 250px;
+  height: 100vh;
+}
+
+/* Right side content */
 .user-main {
   flex: 1;
+  min-width: 0;
+  min-height: 100vh;
   padding: 30px;
-  overflow-x: hidden;
+  overflow-x: auto;
 }
 
-/* Header */
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 25px;
-  flex-wrap: wrap;
-  gap: 15px;
+
+/* Mobile ke elements, desktop par hidden */
+
+.user-mobile-topbar,
+.user-sidebar-close,
+.user-sidebar-overlay {
+  display: none;
 }
 
-.dashboard-header h1 {
-  margin: 0;
-  font-size: 24px;
-  color: #1e1e2f;
-}
 
-.dashboard-header p {
-  margin: 4px 0 0;
-  color: #888;
-  font-size: 14px;
-}
+/* Mobile */
 
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: #fff;
-  padding: 8px 16px;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
+@media (max-width: 768px) {
 
-.profile-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #4f46e5;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-}
-
-.user-profile strong {
-  display: block;
-  font-size: 14px;
-  color: #1e1e2f;
-}
-
-.user-profile span {
-  font-size: 12px;
-  color: #888;
-}
-
-/* Stat Cards */
-.dashboard-cards {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-  margin-bottom: 25px;
-}
-
-.dashboard-card {
-  background: #fff;
-  padding: 20px;
-  border-radius: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.dashboard-card p {
-  margin: 0;
-  color: #888;
-  font-size: 13px;
-}
-
-.dashboard-card h2 {
-  margin: 6px 0 0;
-  font-size: 22px;
-  color: #1e1e2f;
-}
-
-.card-icon {
-  font-size: 26px;
-  background: #f0f0ff;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-/* Bottom Grid */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-.dashboard-panel {
-  background: #fff;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.dashboard-panel h3 {
-  margin: 0 0 15px;
-  font-size: 16px;
-  color: #1e1e2f;
-}
-
-.empty-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 30px 10px;
-  color: #aaa;
-  text-align: center;
-}
-
-.empty-content span {
-  font-size: 30px;
-  margin-bottom: 8px;
-}
-
-.empty-content p {
-  margin: 0;
-  font-size: 13px;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
   .user-main {
-    padding: 16px;
+    padding: 20px;
   }
 
-  .dashboard-header {
-    flex-direction: column;
-    align-items: flex-start;
+  /* Sidebar wrapper: screen ke bahar chhupa hua */
+  .user-sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 250px;
+    height: 100vh;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
   }
+
+  /* Open hone par andar aa jaye */
+  .user-sidebar-wrapper.open {
+    transform: translateX(0);
+  }
+
+  /* Close (✕) button */
+  .user-sidebar-close {
+    display: block;
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    z-index: 10;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+  }
+
+  /* Dark overlay */
+  .user-sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+
+  /* Top bar with menu button */
+  .user-mobile-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #111827;
+  }
+
+  .user-menu-btn {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 20px;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+
+}
+
+
+/* Chhoti mobile */
+
+@media (max-width: 500px) {
+
+  .user-main {
+    padding: 15px;
+  }
+
 }

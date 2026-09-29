@@ -1,85 +1,54 @@
-import React from "react";
-import UserSidebar from "../../../../components/userSidebar/userSidebar";
+import React, { useState, useEffect } from "react";
+import { Outlet, useLocation } from "react-router-dom";
+import UserSidebar from "../../../../components/userSidebar/userSidebar"; // apne path ke hisaab se
 import "./userDashboard.css";
-import { useAuth } from "../../../../context/authContext/authContext";
 
 const UserDashboard = () => {
-    const {user} = useAuth()
-    console.log(user)
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const location = useLocation();
+
+  // Page (URL) badle to mobile par sidebar band ho jaye
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
   return (
     <div className="user-layout">
-      <UserSidebar />
+      {/* Mobile par dark background, click karne se sidebar band */}
+      {sidebarOpen && (
+        <div
+          className="user-sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        ></div>
+      )}
+
+      {/* Sidebar wrapper */}
+      <div
+        className={
+          sidebarOpen ? "user-sidebar-wrapper open" : "user-sidebar-wrapper"
+        }
+      >
+        <button
+          className="user-sidebar-close"
+          onClick={() => setSidebarOpen(false)}
+        >
+          ✕
+        </button>
+
+        <UserSidebar />
+      </div>
 
       <main className="user-main">
-        <div className="dashboard-header">
-          <div>
-            <h1>User Dashboard</h1>
-            <p>Welcome back, User</p>
-          </div>
-
-          <div className="user-profile">
-            <div className="profile-avatar">U</div>
-
-            <div>
-              <strong>User Name</strong>
-              <span>Customer</span>
-            </div>
-          </div>
+        {/* Mobile top bar (sirf mobile par dikhega) */}
+        <div className="user-mobile-topbar">
+          <button className="user-menu-btn" onClick={() => setSidebarOpen(true)}>
+            ☰
+          </button>
+          <span>MyShop</span>
         </div>
 
-        {/* Statistics */}
-        <div className="dashboard-cards">
-          <div className="dashboard-card">
-            <div>
-              <p>Total Orders</p>
-              <h2>12</h2>
-            </div>
-            <div className="card-icon">📦</div>
-          </div>
-
-          <div className="dashboard-card">
-            <div>
-              <p>Wishlist Items</p>
-              <h2>5</h2>
-            </div>
-            <div className="card-icon">❤️</div>
-          </div>
-
-          <div className="dashboard-card">
-            <div>
-              <p>Cart Items</p>
-              <h2>3</h2>
-            </div>
-            <div className="card-icon">🛒</div>
-          </div>
-
-          <div className="dashboard-card">
-            <div>
-              <p>Reviews Given</p>
-              <h2>7</h2>
-            </div>
-            <div className="card-icon">⭐</div>
-          </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="dashboard-grid">
-          <div className="dashboard-panel">
-            <h3>Recent Orders</h3>
-            <div className="empty-content">
-              <span>📋</span>
-              <p>Recent orders will appear here</p>
-            </div>
-          </div>
-
-          <div className="dashboard-panel">
-            <h3>Recent Reviews</h3>
-            <div className="empty-content">
-              <span>⭐</span>
-              <p>Recent reviews will appear here</p>
-            </div>
-          </div>
-        </div>
+        {/* Yahan current page dikhega: products, cart, profile, etc. */}
+        <Outlet />
       </main>
     </div>
   );

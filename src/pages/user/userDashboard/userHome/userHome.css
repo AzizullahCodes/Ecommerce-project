@@ -1,0 +1,208 @@
+.home-welcome {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: white;
+  border-radius: 14px;
+  padding: 30px;
+  margin-bottom: 25px;
+}
+
+.home-welcome h1 {
+  margin: 0 0 8px;
+  font-size: 26px;
+}
+
+.home-welcome p {
+  margin: 0 0 18px;
+  opacity: 0.9;
+}
+
+.home-btn {
+  display: inline-block;
+  background: white;
+  color: #2563eb;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+
+/* Stats */
+
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.home-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.home-stat-icon {
+  width: 48px;
+  height: 48px;
+  background: #eff6ff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.home-stat h2 {
+  margin: 0;
+  color: #111827;
+  font-size: 24px;
+}
+
+.home-stat p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+
+/* Sections */
+
+.home-section {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.home-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.home-section-head h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+}
+
+.home-section-head a {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+
+/* Featured products */
+
+.home-products {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.home-product {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+}
+
+.home-product-img {
+  height: 110px;
+  background: #f3f4f6;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 45px;
+  margin-bottom: 12px;
+}
+
+.home-product h4 {
+  margin: 0 0 6px;
+  color: #111827;
+}
+
+.home-product p {
+  margin: 0 0 10px;
+  color: #6b7280;
+}
+
+.home-product a {
+  color: #2563eb;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+
+/* Recent orders */
+
+.home-order {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid #f3f4f6;
+  color: #111827;
+  text-decoration: none;
+}
+
+.home-order:last-child {
+  border-bottom: none;
+}
+
+.home-status {
+  background: #eff6ff;
+  color: #2563eb;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+}
+
+
+/* Tablet */
+
+@media (max-width: 1100px) {
+
+  .home-stats,
+  .home-products {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+
+/* Mobile */
+
+@media (max-width: 768px) {
+
+  .home-welcome {
+    padding: 20px;
+  }
+
+  .home-welcome h1 {
+    font-size: 21px;
+  }
+
+}
+
+
+/* Chhoti mobile */
+
+@media (max-width: 500px) {
+
+  .home-stats,
+  .home-products {
+    grid-template-columns: 1fr;
+  }
+
+}
