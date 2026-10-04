@@ -4,6 +4,8 @@ import { createRoot } from "react-dom/client";
 import AuthProvider from "./context/authContext/authContext.jsx";
 import { CartProvider } from "./context/cartContext/cartContext.jsx";
 import { OrderProvider } from "./context/orderContext/orderContext.jsx";
+import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 import "./index.css";
 import App from "./App.jsx";
