@@ -1,128 +1,257 @@
 
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./MyOrders.css";
 
 const MyOrders = () => {
   const [myOrders, setMyOrders] = useState([]);
-  const orderStatus = ["pending", "confirmed", "cancelled", "delivered", "shipped"];
+  const navigate = useNavigate();
 
   useEffect(() => {
-    let fetchAllOrders = JSON.parse(localStorage.getItem("OrderHistory"));
-    let activeUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    const fetchAllOrders =
+      JSON.parse(localStorage.getItem("OrderHistory")) || [];
 
-    // array ho tabhi aage chalo
+    const activeUser =
+      JSON.parse(localStorage.getItem("loggedInUser")) || null;
+
     if (Array.isArray(fetchAllOrders)) {
-      // sirf current user ke orders, latest sabse upar
-      let userOrders = fetchAllOrders
+      const userOrders = fetchAllOrders
         .filter((order) => order.userId === activeUser?.email)
         .reverse();
+
       setMyOrders(userOrders);
     }
   }, []);
 
+  // Empty orders
   if (myOrders.length === 0) {
     return (
       <div className="orders-page">
-        <h1 className="orders-title">My All Orders</h1>
-        <p className="empty-text">Aapne abhi tak koi order nahi kiya.</p>
+        <div className="orders-container">
+          <h1 className="orders-title">My Orders</h1>
+
+          <div className="empty-orders">
+            <div className="empty-icon">📦</div>
+
+            <h2>No Orders Yet</h2>
+
+            <p>
+              Aapne abhi tak koi order nahi kiya.
+            </p>
+
+            <button
+              className="shop-now-btn"
+              onClick={() => navigate("/products")}
+            >
+              Start Shopping
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
     <div className="orders-page">
-      <h1 className="orders-title">My All Orders ({myOrders.length})</h1>
+      <div className="orders-container">
 
-      {myOrders.map((order) => {
-        // status lowercase mein, taake badge ki CSS class match kare
-        let status = (order.status || orderStatus[0]).toLowerCase();
+        {/* Page Header */}
+        <div className="orders-page-header">
+          <div>
+            <h1 className="orders-title">My Orders</h1>
+            <p className="orders-subtitle">
+              View and manage all your orders
+            </p>
+          </div>
 
-        return (
-          <div className="order-card" key={order.orderId}>
-            {/* Header */}
-            <div className="order-header">
-              <div>
-                <p className="order-label">Order ID</p>
-                <h2 className="order-id">#{order.orderId}</h2>
-              </div>
+          <div className="orders-count">
+            {myOrders.length}{" "}
+            {myOrders.length === 1 ? "Order" : "Orders"}
+          </div>
+        </div>
 
-              <div>
-                <p className="order-label">Order Date</p>
-                <p className="order-value">
-                  {new Date(order.orderDate).toLocaleDateString()}
-                </p>
-                <p className="order-value">{order.orderTime}</p>
-              </div>
+        {/* Orders */}
+        <div className="orders-list">
+          {myOrders.map((order) => {
+            const status = (order.status || "pending").toLowerCase();
 
-              <span className={`status-badge status-${status}`}>{status}</span>
-            </div>
+            return (
+              <div className="order-card" key={order.orderId}>
 
-            {/* Delivery + payment info */}
-            <div className="order-info">
-              {order.shippingAddress && (
-                <p>
-                  <b>Ship to:</b> {order.shippingAddress.name},{" "}
-                  {order.shippingAddress.address}, {order.shippingAddress.city} |{" "}
-                  {order.shippingAddress.phone}
-                </p>
-              )}
-              <p>
-                <b>Payment:</b> {order.paymentMethod} ({order.paymentStatus})
-              </p>
-              {order.estimatedDelivery && status !== "cancelled" && (
-                <p>
-                  <b>Estimated Delivery:</b>{" "}
-                  {new Date(order.estimatedDelivery).toLocaleDateString()}
-                </p>
-              )}
-              {order.otherDetails && (
-                <p>
-                  <b>Note:</b> {order.otherDetails}
-                </p>
-              )}
-            </div>
+                {/* Order Header */}
+                <div className="order-header">
 
-            {/* Items */}
-            <h3 className="items-title">Item List</h3>
-            <ul className="items-list">
-              {order.bucket.map((item) => {
-                return (
-                  <li key={item.productId} className="item-row">
-                    <img
-                      className="item-image"
-                      src={item.productImage}
-                      alt={item.productName}
-                    />
+                  <div className="order-header-left">
+                    <p className="order-label">Order ID</p>
 
-                    <div className="item-info">
-                      <h3 className="item-name">{item.productName}</h3>
-                      <p className="item-meta">
-                        Price: {item.productPrice} PKR &nbsp;|&nbsp; Qty: {item.quantity}
+                    <h2 className="order-id">
+                      #{order.orderId}
+                    </h2>
+                  </div>
+
+                  <div className="order-date">
+                    <p className="order-label">Order Date</p>
+
+                    <p className="order-value">
+                      {order.orderDate
+                        ? new Date(
+                            order.orderDate
+                          ).toLocaleDateString()
+                        : "N/A"}
+                    </p>
+
+                    {order.orderTime && (
+                      <p className="order-time">
+                        {order.orderTime}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Status */}
+                  <span
+                    className={`status-badge status-${status}`}
+                  >
+                    {status}
+                  </span>
+                </div>
+
+                {/* Main Order Summary */}
+                <div className="order-summary">
+
+                  {/* Products */}
+                  <div className="summary-box">
+                    <span className="summary-icon">🛍️</span>
+
+                    <div>
+                      <p className="summary-label">
+                        Products
+                      </p>
+
+                      <p className="summary-value">
+                        {order.bucket?.length || 0}{" "}
+                        {order.bucket?.length === 1
+                          ? "Item"
+                          : "Items"}
                       </p>
                     </div>
+                  </div>
 
-                    <div className="item-subtotal">
-                      {item.productPrice * item.quantity} PKR
+                  {/* Payment */}
+                  <div className="summary-box">
+                    <span className="summary-icon">💳</span>
+
+                    <div>
+                      <p className="summary-label">
+                        Payment
+                      </p>
+
+                      <p className="summary-value">
+                        {order.paymentMethod || "N/A"}
+                      </p>
                     </div>
-                  </li>
-                );
-              })}
-            </ul>
+                  </div>
 
-            {/* Footer */}
-            {order.deliveryCharges > 0 && (
-              <div className="delivery-row">
-                <span>Delivery Charges</span>
-                <span>{order.deliveryCharges} PKR</span>
+                  {/* Delivery */}
+                  <div className="summary-box">
+                    <span className="summary-icon">🚚</span>
+
+                    <div>
+                      <p className="summary-label">
+                        Delivery
+                      </p>
+
+                      <p className="summary-value">
+                        {status === "delivered"
+                          ? "Delivered"
+                          : status === "cancelled"
+                          ? "Cancelled"
+                          : order.estimatedDelivery
+                          ? new Date(
+                              order.estimatedDelivery
+                            ).toLocaleDateString()
+                          : "Processing"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Total */}
+                  <div className="summary-box total-box">
+                    <span className="summary-icon">💰</span>
+
+                    <div>
+                      <p className="summary-label">
+                        Total
+                      </p>
+
+                      <p className="summary-total">
+                        {order.totalPrice || 0} PKR
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Product Preview */}
+                {order.bucket?.length > 0 && (
+                  <div className="product-preview">
+
+                    {order.bucket.slice(0, 3).map((item) => (
+                      <div
+                        className="product-preview-item"
+                        key={item.productId}
+                      >
+                        <img
+                          src={item.productImage}
+                          alt={item.productName}
+                        />
+
+                        <div>
+                          <p className="product-name">
+                            {item.productName}
+                          </p>
+
+                          <p className="product-quantity">
+                            Qty: {item.quantity}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+
+                    {order.bucket.length > 3 && (
+                      <div className="more-products">
+                        +{order.bucket.length - 3} more
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Footer */}
+                <div className="order-footer">
+
+                  <div className="footer-info">
+                    {order.paymentStatus && (
+                      <span>
+                        Payment:{" "}
+                        <strong>
+                          {order.paymentStatus}
+                        </strong>
+                      </span>
+                    )}
+                  </div>
+
+                  <button
+                    className="view-details-btn"
+                    onClick={() =>
+                      navigate(`/userDashboard/orderDetails/${order.orderId}`)
+                    }
+                  >
+                    View Order Details →
+                  </button>
+                </div>
               </div>
-            )}
-            <div className="order-footer">
-              <span>Total Price</span>
-              <span className="order-total">{order.totalPrice} PKR</span>
-            </div>
-          </div>
-        );
-      })}
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 };

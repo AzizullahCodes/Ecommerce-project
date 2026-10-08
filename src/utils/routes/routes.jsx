@@ -114,6 +114,7 @@ import Reviews from "../../pages/user/userDashboard/reviews/reviews";
 import Profile from "../../pages/user/userDashboard/profile/profile";
 import Addresses from "../../pages/user/userDashboard/profile/addresses";
 import ChangePassword from "../../pages/user/userDashboard/changePassword/changePassword";
+import OrderDetail from "../../pages/user/userDashboard/orderDetails/orderDetails";
 // userDashboard components completed
 
 import PublicRoutes from "../publicRoutes/publicRoutes";
@@ -172,6 +173,7 @@ const AppRoutes = () => {
 
           {/* orders */}
           <Route path="orders" element={<MyOrders />} />
+          <Route path="orderDetails/:orderId" element={<OrderDetail/>}/>
           {/* <Route path="orders/:orderId" element={<OrderDetails />} /> */}
           {/* <Route path="/orderDetails/:orderId" element={<OrderDetails/>}/> */}
 

@@ -10,6 +10,7 @@ const links = [
   { to: `${BASE}/cart`, label: "Cart", icon: "🛒" },
   { to: `${BASE}/checkout`, label: "Checkout", icon: "💳" },
   { to: `${BASE}/orders`, label: "My Orders", icon: "📋" },
+  {to : `${BASE}/orderDetails`,label: "Order Detail",icon : "📋"},
   { to: `${BASE}/wishlist`, label: "Wishlist", icon: "❤️" },
   { to: `${BASE}/reviews`, label: "Reviews", icon: "⭐" },
   { to: `${BASE}/profile`, label: "Profile", icon: "👤" },
