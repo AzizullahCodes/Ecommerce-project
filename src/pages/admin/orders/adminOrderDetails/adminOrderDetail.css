@@ -1,0 +1,54 @@
+.aod-page { padding: 20px; max-width: 1000px; }
+
+.aod-back {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-size: 15px;
+  margin-bottom: 14px;
+}
+
+.aod-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.aod-header h1 { margin: 0; font-size: 24px; }
+
+.aod-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.aod-card {
+  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.aod-card h3 { margin: 0 0 12px; }
+.aod-card p { margin: 6px 0; color: #374151; }
+
+.aod-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.aod-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
+.aod-item-info { flex: 1; }
+.aod-item-name { font-weight: 600; }
+.aod-item-price { font-weight: 600; }
+
+.aod-total { text-align: right; font-size: 18px; font-weight: 700; margin-top: 14px; }
