@@ -92,7 +92,6 @@ import DashboardHome from "../../pages/admin/dashboard/dashboardHome/dashboardHo
 import Coupons from "../../pages/admin/coupons/Coupons";
 import Notifications from "../../pages/admin/notifications/Notifications";
 import AllOrders from "../../pages/admin/orders/allOrders/allOrders";
-import OrderDetail from "../../pages/admin/orders/orderDetail/orderDetail";
 import AddProducts from "../../pages/admin/products/addProduct/addProduct";
 import EditProduct from "../../pages/admin/products/editProduct/editProduct";
 import Categories from "../../pages/admin/products/categories/categories";
@@ -110,7 +109,6 @@ import ProductDetails from "../../pages/user/userDashboard/productDetails/produc
 import Cart from "../../pages/user/userDashboard/cart/cart";
 import Checkout from "../../pages/user/userDashboard/checkout/checkout";
 import MyOrders from "../../pages/user/userDashboard/orders/myOrders";
-import OrderDetails from "../../pages/user/userDashboard/orderDetail/orderDetails";
 import WishList from "../../pages/user/userDashboard/wishList/wishList";
 import Reviews from "../../pages/user/userDashboard/reviews/reviews";
 import Profile from "../../pages/user/userDashboard/profile/profile";
@@ -138,7 +136,7 @@ const AppRoutes = () => {
 
           {/* orders */}
           <Route path="orders" element={<AllOrders />} />
-          <Route path="orders/:orderId" element={<OrderDetail />} />
+          {/* <Route path="orderDetails/:orderId" element={<OrderDetails />} /> */}
 
           {/* products */}
           <Route path="products" element={<AllProducts />} />
@@ -174,7 +172,8 @@ const AppRoutes = () => {
 
           {/* orders */}
           <Route path="orders" element={<MyOrders />} />
-          <Route path="orders/:orderId" element={<OrderDetails />} />
+          {/* <Route path="orders/:orderId" element={<OrderDetails />} /> */}
+          {/* <Route path="/orderDetails/:orderId" element={<OrderDetails/>}/> */}
 
           {/* baaki pages */}
           <Route path="wishlist" element={<WishList />} />

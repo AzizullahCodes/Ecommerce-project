@@ -1,5 +1,4 @@
 
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -19,17 +18,6 @@ const Cart = () => {
 
   const [currentOrders, setCurrentOrders] = useState([]);
   const [price, setPrice] = useState(0);
-  const [nowActiveUser, setNowActiveUser] = useState(null);
-  const [otherDetails, setOtherDetails] = useState('');
-
-const clearStates = ()=>{
-  setCurrentOrders('');
-  setOtherDetails('');
-  setPrice(0);
-
-  localStorage.setItem('YourOrders',JSON.stringify([]))
-
-}
 
   useEffect(() => {
     let getData = localStorage.getItem('YourOrders');
@@ -39,10 +27,6 @@ const clearStates = ()=>{
     } else {
       localStorage.setItem('YourOrders', JSON.stringify([]));
     }
-
-    let activeUser = localStorage.getItem('loggedInUser');
-    let jsonUser = JSON.parse(activeUser);
-    jsonUser && setNowActiveUser(jsonUser);
   }, []);
 
   const deleteItem = (deleteItemId) => {
@@ -77,47 +61,6 @@ const clearStates = ()=>{
     let tot = arr.reduce((prev, next) => prev + next, 0);
     setPrice(tot);
   }, [currentOrders]);
-
-  // ✅ FIXED handlePlaceOrder
-  const handlePlaceOrder = (orders) => {
-    if (!nowActiveUser) {
-      console.log('User not logged in — cannot place order');
-      return;
-    }
-
-    if (!orders || orders.length === 0) {
-      console.log('Cart is empty — cannot place order');
-      return;
-    }
-    let fetchAllOrders = localStorage.getItem('OrderHistory')
-    // console.log('all orders history....',fetchAllOrders)
-    let jsonFetchAllOrders = JSON.parse(fetchAllOrders);
-
-    let ordersObj = {
-      bucket: orders,
-      totalPrice: price,
-      otherDetails: otherDetails,
-      userId: nowActiveUser.email,
-      orderDate: new Date().toISOString()
-    };
-
-   jsonFetchAllOrders.push(ordersObj)
-   localStorage.setItem('OrderHistory',JSON.stringify(jsonFetchAllOrders))
-   alert('order placed successfully')
-
-   setTimeout(() => {
-    navigate('/orders')
-    clearStates()
-    
-   }, 1000);
-    // // clear the cart
-    // localStorage.setItem('YourOrders', JSON.stringify([]));
-    // setCurrentOrders([]);
-    // setOtherDetails('');
-
-    // // navigate to success page
-    // navigate('/order-success');
-  };
 
   return (
     <div>
@@ -162,21 +105,13 @@ const clearStates = ()=>{
       </div>
       <hr />
 
-      <textarea
-        placeholder='Enter others important details'
-        rows={4}
-        cols={60}
-        value={otherDetails}
-        onChange={(e) => setOtherDetails(e.target.value)}
-      ></textarea>
-
+      {/* check out page */}
       <div className="d-grid gap-2 col-6 mx-auto">
-        {/* ✅ FIXED: arrow function se pass karo, taake event ki jagah currentOrders jaaye */}
         <MDBBtn
-          onClick={() => handlePlaceOrder(currentOrders)}
-          disabled={otherDetails.trim().length < 1}
+          onClick={() => navigate('/checkoutPage')}
+          disabled={currentOrders.length === 0}
         >
-          Place Order
+          checkout
         </MDBBtn>
       </div>
     </div>
