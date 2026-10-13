@@ -87,7 +87,7 @@ const CheckOut = () => {
       localStorage.setItem('YourOrders', JSON.stringify([]))
 
       alert('order placed successfully')
-      navigate('/orders')
+      navigate('/userDashboar/orderSuccess')
     }
   }
 
