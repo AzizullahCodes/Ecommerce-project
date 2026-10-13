@@ -108,7 +108,7 @@ const Cart = () => {
       {/* check out page */}
       <div className="d-grid gap-2 col-6 mx-auto">
         <MDBBtn
-          onClick={() => navigate('/checkoutPage')}
+          onClick={() => navigate('/userDashboard/checkout')}
           disabled={currentOrders.length === 0}
         >
           checkout

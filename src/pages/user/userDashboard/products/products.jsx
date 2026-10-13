@@ -47,6 +47,7 @@ const ProductsPage = () => {
      bucketClone.push(product);
     //  console.log('updated bucket is....', bucketClone)
      setBucket(bucketClone);
+     alert('Added to cart')
      }
      
    }
@@ -74,9 +75,8 @@ const ProductsPage = () => {
     // console.log(bucket)
     localStorage.setItem('YourOrders',JSON.stringify(bucket))
     // naviagtion('/cart') 
-    localStorage.setItem('YourOrders', JSON.stringify(bucket));
-  window.dispatchEvent(new Event('cartUpdated')); // 👈 notify Navbar
-  // naviagtion('/cart')
+   
+   naviagtion('/userDashboard/cart')
   }
 
 
@@ -109,6 +109,7 @@ const ProductsPage = () => {
                   <MDBCardTitle>{product.productName}</MDBCardTitle>
                   <MDBCardText>{product.productDescription}</MDBCardText>
                   <MDBBtn onClick={()=>addItemToShoppingCart(product)}>Add to cart</MDBBtn>
+
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>
