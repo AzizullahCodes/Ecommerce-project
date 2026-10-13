@@ -1,8 +1,3 @@
-
-
-
-
-
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './checkout.css'
@@ -12,7 +7,7 @@ const CheckOut = () => {
   const [currentOrders, setCurrentOrders] = useState([]);
   const [price, setPrice] = useState(0);
   const [nowActiveUser, setNowActiveUser] = useState(null);
-  let [user, setUser] = useState('')
+  const [isPlacing, setIsPlacing] = useState(false)
   let navigate = useNavigate();
 
   //form data
@@ -29,86 +24,79 @@ const CheckOut = () => {
 
   //formHandler
   const formHandler = () => {
-    if (!name || !email || !phone || !address || !city || !paymentMethod || !otherDetails) {
-      alert('fill all fields of form')
+    if (isPlacing) return // double click se bachne ke liye
+
+    // otherDetails optional hai, isliye yahan check nahi
+    if (!name.trim() || !email.trim() || !phone.trim() || !address.trim() || !city.trim() || !paymentMethod) {
+      alert('fill all required fields of form')
+      return
     }
-    else {
-      let userDetailForm = {
-        name,
-        email,
-        phone,
-        city,
-        address,
-        paymentMethod,
-        otherDetails
-      }
-      console.log('userDetailForm....', userDetailForm)
 
-      // --- order save karne ka code ---
-      if (!nowActiveUser) {
-        alert('no active user found')
-        return
-      }
-      if (currentOrders.length === 0) {
-        alert('cart is empty')
-        return
-      }
-
-      // purana OrderHistory object ho sakta hai, isliye array check
-      let oldHistory = JSON.parse(localStorage.getItem('OrderHistory'))
-      let history = Array.isArray(oldHistory) ? oldHistory : []
-
-      let ordersObj = {
-        orderId: Date.now(),
-        bucket: currentOrders,
-        userId: nowActiveUser.email,
-        orderDate: new Date().toISOString(),
-        orderTime: new Date().toLocaleTimeString(),
-        status: 'Pending',
-        shippingAddress: {
-          name: name,
-          phone: phone,
-          address: address,
-          city: city
-        },
-        contactEmail: email,
-        paymentMethod: paymentMethod,
-        paymentStatus: 'Unpaid',
-        deliveryCharges: deliveryCharges,
-        totalPrice: grandTotal,
-        otherDetails: otherDetails,
-        estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString()
-      }
-
-      history.push(ordersObj)
-      localStorage.setItem('OrderHistory', JSON.stringify(history))
-
-      // cart clear
-      localStorage.setItem('YourOrders', JSON.stringify([]))
-
-      alert('order placed successfully')
-      navigate('/userDashboar/orderSuccess')
+    // phone validation (11 digits, jaise 03001234567)
+    if (!/^\d{11}$/.test(phone.trim())) {
+      alert('phone number 11 digits ka hona chahiye')
+      return
     }
+
+    if (!nowActiveUser) {
+      alert('no active user found')
+      return
+    }
+    if (currentOrders.length === 0) {
+      alert('cart is empty')
+      return
+    }
+
+    setIsPlacing(true)
+
+    // purana OrderHistory object ho sakta hai, isliye array check
+    let oldHistory = JSON.parse(localStorage.getItem('OrderHistory'))
+    let history = Array.isArray(oldHistory) ? oldHistory : []
+
+    let ordersObj = {
+      orderId: Date.now(),
+      bucket: currentOrders,
+      userId: nowActiveUser.email,
+      orderDate: new Date().toISOString(),
+      orderTime: new Date().toLocaleTimeString(),
+      status: 'Pending',
+      shippingAddress: {
+        name: name.trim(),
+        phone: phone.trim(),
+        address: address.trim(),
+        city: city.trim()
+      },
+      contactEmail: email.trim(),
+      paymentMethod: paymentMethod,
+      paymentStatus: 'Unpaid',
+      deliveryCharges: deliveryCharges,
+      totalPrice: grandTotal,
+      otherDetails: otherDetails.trim(),
+      estimatedDelivery: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString()
+    }
+
+    history.push(ordersObj)
+    localStorage.setItem('OrderHistory', JSON.stringify(history))
+
+    // cart clear
+    localStorage.setItem('YourOrders', JSON.stringify([]))
+
+    // replace: true => Back dabane par checkout dobara nahi khulega
+    navigate('/userDashboard/orderSuccess', { replace: true })
   }
 
-  // logged in user load karo
+  // logged in user + cart load karo (ek hi useEffect me)
   useEffect(() => {
     let activeUser = localStorage.getItem('loggedInUser')
-    if (activeUser) {
-      setUser(activeUser)
-      setNowActiveUser(JSON.parse(activeUser))
-    }
-    else {
+    if (!activeUser) {
       alert('no active user found')
       navigate('/login')
+      return
     }
-  }, [])
+    setNowActiveUser(JSON.parse(activeUser))
 
-  // cart load karo
-  useEffect(() => {
     let orders = localStorage.getItem('YourOrders')
     let jsonOrderRecord = orders ? JSON.parse(orders) : []
-    console.log('jsonRecord order is....', jsonOrderRecord)
 
     if (jsonOrderRecord.length === 0) {
       alert('cart is empty')
@@ -126,8 +114,6 @@ const CheckOut = () => {
     )
     setPrice(tot)
   }, [currentOrders])
-
-  console.log('user is ', user)
 
   return (
     <div className="checkout-page">
@@ -162,9 +148,10 @@ const CheckOut = () => {
             <label>Phone</label>
             <input
               type="tel"
-              placeholder="enter phone"
+              placeholder="03001234567"
+              maxLength={11}
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
             />
           </div>
         </div>
@@ -210,10 +197,10 @@ const CheckOut = () => {
           </div>
 
           <div className="form-group full-width">
-            <label>Other Details</label>
+            <label>Other Details (optional)</label>
             <input
               type="text"
-              placeholder="enter other detail"
+              placeholder="e.g. gate ke paas dena, call before delivery"
               value={otherDetails}
               onChange={(e) => setOtherDetails(e.target.value)}
             />
@@ -237,8 +224,12 @@ const CheckOut = () => {
           </div>
         </div>
 
-        <button className="submit-btn" onClick={formHandler}>
-          Place Order
+        <button
+          className="submit-btn"
+          onClick={formHandler}
+          disabled={isPlacing}
+        >
+          {isPlacing ? 'Placing Order...' : 'Place Order'}
         </button>
       </div>
     </div>

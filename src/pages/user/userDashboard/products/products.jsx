@@ -1,5 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
+
 import {
   MDBCard,
   MDBCardBody,
@@ -60,12 +62,17 @@ const ProductsPage = () => {
       let jsonData = JSON.parse(get);
       jsonData && setFetchProducts(jsonData);
       //fetching loggedInUser from local storage 
-      let user = localStorage.getItem('loggedInUser');
-      // console.log('user....',user)
-      if(user){
-        let jsonUser = JSON.parse(user);
-        // console.log(jsonUser) 
-        jsonUser && setAuthUser(jsonUser)
+      // let user = localStorage.getItem('loggedInUser');
+      // // console.log('user....',user)
+      // if(user){
+      //   let jsonUser = JSON.parse(user);
+      //   // console.log(jsonUser) 
+      //   jsonUser && setAuthUser(jsonUser)
+      // }
+      let isUserAvailable = localStorage.getItem('loggedInUser')
+      if(isUserAvailable){
+        let jsonData = JSON.parse(isUserAvailable)
+        jsonData && setAuthUser(jsonData)
       }
     }
   }, []);

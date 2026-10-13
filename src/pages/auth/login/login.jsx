@@ -43,6 +43,8 @@ const Login = () => {
 
     // Save in Context
     login(userData);
+    //save in local storage also 
+    localStorage.setItem('loggedInUser',JSON.stringify(userData))
 
     // Save in Cookie
     Cookies.set(
