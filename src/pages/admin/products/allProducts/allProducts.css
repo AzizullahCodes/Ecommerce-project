@@ -1,0 +1,27 @@
+.all-products-page,
+.admin-products-page {
+  animation: fadeInUp 0.7s var(--ease) both;
+}
+
+.all-products-page .card,
+.admin-products-page .card {
+  animation: fadeScale 0.6s var(--ease) both;
+  overflow: hidden;
+}
+
+.all-products-page .card img,
+.admin-products-page .card img {
+  transition: transform 0.5s var(--ease);
+}
+
+.all-products-page .card:hover img,
+.admin-products-page .card:hover img {
+  transform: scale(1.08) rotate(1deg);
+}
+
+.all-products-page .btn,
+.admin-products-page .btn {
+  background: linear-gradient(120deg, var(--accent-2), var(--accent));
+  color: #fff;
+  border: 0;
+}

@@ -1,25 +1,17 @@
-import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import React from 'react'
 import { Link, Navigate } from 'react-router-dom'
+import './orderSuccess.css'
 
 const OrderSuccess = () => {
-  const [lastOrder, setLastOrder] = useState(null)
-  const [loaded, setLoaded] = useState(false)
+  const lastOrder = useSelector((state) => state.orders.items.at(-1))
 
-  useEffect(() => {
-    let history = JSON.parse(localStorage.getItem('OrderHistory'))
-    if (Array.isArray(history) && history.length > 0) {
-      setLastOrder(history[history.length - 1]) // sabse naya order
-    }
-    setLoaded(true)
-  }, [])
-
-  if (!loaded) return null
   if (!lastOrder) return <Navigate to="/userDashboard" replace />
 
   return (
     <div className="success-page">
       <div className="success-card">
-        <h1>Order placed successfully ✅</h1>
+        <h1>Order placed successfully</h1>
         <p>Order ID: #{lastOrder.orderId}</p>
         <p>Payment: {lastOrder.paymentMethod}</p>
         <p>Total: {lastOrder.totalPrice} PKR</p>

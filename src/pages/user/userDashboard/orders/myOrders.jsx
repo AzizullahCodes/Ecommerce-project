@@ -1,27 +1,17 @@
+import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import "./MyOrders.css";
 
 const MyOrders = () => {
-  const [myOrders, setMyOrders] = useState([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchAllOrders =
-      JSON.parse(localStorage.getItem("OrderHistory")) || [];
-
-    const activeUser =
-      JSON.parse(localStorage.getItem("loggedInUser")) || null;
-
-    if (Array.isArray(fetchAllOrders)) {
-      const userOrders = fetchAllOrders
-        .filter((order) => order.userId === activeUser?.email)
-        .reverse();
-
-      setMyOrders(userOrders);
-    }
-  }, []);
+  const reduxOrders = useSelector((state) => state.orders.items);
+  const activeUser = useSelector((state) => state.auth.user);
+  const myOrders = reduxOrders
+    .filter((order) => order.userId === activeUser?.email)
+    .slice()
+    .reverse();
 
   // Empty orders
   if (myOrders.length === 0) {

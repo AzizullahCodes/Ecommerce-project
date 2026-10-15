@@ -1,0 +1,35 @@
+.dashboard-home {
+  padding: 24px;
+}
+
+.dashboard-home .dashboard-header h1 {
+  background: linear-gradient(120deg, #ffffff, #bdaeff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: fadeInUp 0.7s var(--ease) both;
+}
+
+.dashboard-home .dashboard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 18px;
+  margin: 22px 0;
+}
+
+.dashboard-home .dashboard-card:nth-child(1) { animation: fadeScale 0.6s var(--ease) 0.05s both; }
+.dashboard-home .dashboard-card:nth-child(2) { animation: fadeScale 0.6s var(--ease) 0.12s both; }
+.dashboard-home .dashboard-card:nth-child(3) { animation: fadeScale 0.6s var(--ease) 0.19s both; }
+.dashboard-home .dashboard-card:nth-child(4) { animation: fadeScale 0.6s var(--ease) 0.26s both; }
+
+.dashboard-home .dashboard-card h2 {
+  font-size: 2rem;
+  background: linear-gradient(120deg, #ff9a3c, #7c5cff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dashboard-home .dashboard-panel {
+  animation: fadeInUp 0.8s var(--ease) 0.3s both;
+}

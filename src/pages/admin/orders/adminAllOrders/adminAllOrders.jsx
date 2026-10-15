@@ -1,34 +1,22 @@
-import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { updateOrderStatus } from '../../../../features/orders/ordersSlice.js';
 import "./adminAllOrders.css";
 
 const STATUS_LIST = ["pending", "processing", "shipped", "delivered", "cancelled"];
 
 const AdminAllOrders = () => {
-  const [orders, setOrders] = useState([]);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const reduxOrders = useSelector((state) => state.orders.items);
+  const orders = [...reduxOrders].reverse();
+
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const data = JSON.parse(localStorage.getItem("OrderHistory")) || [];
-    setOrders(Array.isArray(data) ? [...data].reverse() : []);
-  }, []);
 
   const handleStatusChange = (orderId, newStatus) => {
-    const all = JSON.parse(localStorage.getItem("OrderHistory")) || [];
-
-    const updated = all.map((o) => {
-      if (o.orderId !== orderId) return o;
-      return {
-        ...o,
-        status: newStatus,
-        paymentStatus: newStatus === "delivered" ? "Paid" : o.paymentStatus,
-      };
-    });
-
-    localStorage.setItem("OrderHistory", JSON.stringify(updated));
-    setOrders([...updated].reverse());
+    dispatch(updateOrderStatus({ orderId, status: newStatus }));
   };
 
   const filteredOrders = orders.filter((order) => {

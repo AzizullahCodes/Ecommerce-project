@@ -1,119 +1,57 @@
-
-import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import React from 'react';
+import { changeQuantity, setQuantity, removeFromCart } from '../../../../features/cart/cartSlice.js';
 import { useNavigate } from 'react-router-dom';
-import {
-  MDBCard,
-  MDBCardBody,
-  MDBCardTitle,
-  MDBCardText,
-  MDBCardImage,
-  MDBBtn,
-  MDBRipple,
-  MDBRow,
-  MDBCol
-} from 'mdb-react-ui-kit';
+import './cart.css';
+import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage, MDBBtn, MDBRipple, MDBRow, MDBCol } from 'mdb-react-ui-kit';
 
 const Cart = () => {
   const navigate = useNavigate();
-
-  const [currentOrders, setCurrentOrders] = useState([]);
-  const [price, setPrice] = useState(0);
-
-  useEffect(() => {
-    let getData = localStorage.getItem('YourOrders');
-    if (getData) {
-      let jsonData = JSON.parse(getData);
-      jsonData && setCurrentOrders(jsonData);
-    } else {
-      localStorage.setItem('YourOrders', JSON.stringify([]));
-    }
-  }, []);
-
-  const deleteItem = (deleteItemId) => {
-    let allOrders = [...currentOrders];
-    let findIndexNumber = allOrders.findIndex((item) => item.productId === deleteItemId);
-    allOrders.splice(findIndexNumber, 1);
-    setCurrentOrders(allOrders);
-    localStorage.setItem('YourOrders', JSON.stringify(allOrders));
-  };
-
-  const increment = (index) => {
-    currentOrders[index].quantity++;
-    setCurrentOrders([...currentOrders]);
-    localStorage.setItem('YourOrders', JSON.stringify(currentOrders));
-  };
-
-  const decrement = (product, index) => {
-    let objClone = { ...product };
-    objClone.quantity = objClone.quantity - 1;
-    let fetchOrderData = [...currentOrders];
-    fetchOrderData.splice(index, 1, objClone);
-    setCurrentOrders(fetchOrderData);
-    localStorage.setItem('YourOrders', JSON.stringify(fetchOrderData));
-  };
-
-  useEffect(() => {
-    let fetchCurrentOrders = [...currentOrders];
-    let arr = [];
-    for (let i = 0; i < fetchCurrentOrders.length; i++) {
-      arr.push(Number(fetchCurrentOrders[i].productPrice) * Number(fetchCurrentOrders[i].quantity));
-    }
-    let tot = arr.reduce((prev, next) => prev + next, 0);
-    setPrice(tot);
-  }, [currentOrders]);
+  const dispatch = useDispatch();
+  const currentOrders = useSelector((state) => state.cart.items);
+  const price = currentOrders.reduce((sum, item) => sum + Number(item.productPrice) * Number(item.quantity || 1), 0);
 
   return (
-    <div>
-      <h1>Orders screen</h1>
-
-      {(currentOrders && currentOrders.length > 0) ? (
+    <div className="cart-page">
+      <h1>Shopping cart</h1>
+      {currentOrders.length > 0 ? (
         <MDBRow>
-          {currentOrders.map((product, index) => (
-            <MDBCol sm='4' key={index} className="mb-4">
+          {currentOrders.map((product) => (
+            <MDBCol sm="4" key={product.productId} className="mb-4">
               <MDBCard>
-                <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
-                  <MDBCardImage
-                    src={product.productImage}
-                    fluid
-                    alt={product.productName}
-                    style={{ height: 100, width: 80, objectFit: 'contain' }}
-                  />
-                  <a>
-                    <div className='mask' style={{ backgroundColor: 'rgba(251, 251, 251, 0.15)' }}></div>
-                  </a>
+                <MDBRipple rippleColor="light" rippleTag="div" className="bg-image hover-overlay">
+                  <MDBCardImage src={product.productImage} fluid alt={product.productName} style={{ height: 100, width: 80, objectFit: 'contain' }} />
+                  <a><div className="mask" style={{ backgroundColor: 'rgba(251, 251, 251, 0.15)' }} /></a>
                 </MDBRipple>
                 <MDBCardBody>
                   <MDBCardTitle>{product.productName}</MDBCardTitle>
                   <MDBCardText>{product.productDescription}</MDBCardText>
-                  <MDBCardText>Price : {product.productPrice * product.quantity} PKR</MDBCardText>
-                  <MDBBtn onClick={() => increment(index)}>+</MDBBtn>
-                  <MDBBtn onClick={() => decrement(product, index)} disabled={product.quantity < 2}>-</MDBBtn>
-                  <MDBCardText>Quantity : {product.quantity}</MDBCardText>
-                  <MDBBtn onClick={() => deleteItem(product.productId)}>Delete Item</MDBBtn>
+                  <MDBCardText>Price: {Number(product.productPrice) * Number(product.quantity || 1)} PKR</MDBCardText>
+                  <MDBBtn onClick={() => dispatch(changeQuantity({ id: product.productId, amount: 1 }))}>+</MDBBtn>
+                  <MDBBtn onClick={() => dispatch(changeQuantity({ id: product.productId, amount: -1 }))} disabled={Number(product.quantity || 1) < 2}>-</MDBBtn>
+                  <div style={{ margin: '8px 0' }}>
+                    <label>
+                      Qty:{' '}
+                      <input
+                        type="number"
+                        min="1"
+                        value={product.quantity || 1}
+                        onChange={(e) => dispatch(setQuantity({ id: product.productId, quantity: e.target.value }))}
+                        style={{ width: 60 }}
+                      />
+                    </label>
+                  </div>
+                  <MDBBtn onClick={() => dispatch(removeFromCart(product.productId))}>Delete item</MDBBtn>
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>
           ))}
         </MDBRow>
-      ) : (
-        <h1>No product found</h1>
-      )}
-
+      ) : <h2>Your cart is empty</h2>}
       <hr />
-      <div>
-        <h2>Total Price : {price}</h2>
-      </div>
+      <h2>Total price: {price} PKR</h2>
       <hr />
-
-      {/* check out page */}
-      <div className="d-grid gap-2 col-6 mx-auto">
-        <MDBBtn
-          onClick={() => navigate('/userDashboard/checkout')}
-          disabled={currentOrders.length === 0}
-        >
-          checkout
-        </MDBBtn>
-      </div>
+      <div className="d-grid gap-2 col-6 mx-auto"><MDBBtn onClick={() => navigate('/userDashboard/checkout')} disabled={currentOrders.length === 0}>Checkout</MDBBtn></div>
     </div>
   );
 };

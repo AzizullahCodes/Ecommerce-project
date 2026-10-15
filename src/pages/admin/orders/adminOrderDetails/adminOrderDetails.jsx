@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { updateOrderStatus } from '../../../../features/orders/ordersSlice.js';
 import "./adminOrderDetail.css";
 
 const STATUS_LIST = ["pending", "processing", "shipped", "delivered", "cancelled"];
@@ -7,29 +9,11 @@ const STATUS_LIST = ["pending", "processing", "shipped", "delivered", "cancelled
 const AdminOrderDetail = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const [order, setOrder] = useState(null);
-
-  useEffect(() => {
-    const all = JSON.parse(localStorage.getItem("OrderHistory")) || [];
-    const found = all.find((o) => String(o.orderId) === String(orderId));
-    setOrder(found || null);
-  }, [orderId]);
+  const dispatch = useDispatch();
+  const order = useSelector((state) => state.orders.items.find((o) => String(o.orderId) === String(orderId)));
 
   const handleStatusChange = (newStatus) => {
-    const all = JSON.parse(localStorage.getItem("OrderHistory")) || [];
-
-    const updated = all.map((o) =>
-      String(o.orderId) === String(orderId)
-        ? {
-            ...o,
-            status: newStatus,
-            paymentStatus: newStatus === "delivered" ? "Paid" : o.paymentStatus,
-          }
-        : o
-    );
-
-    localStorage.setItem("OrderHistory", JSON.stringify(updated));
-    setOrder(updated.find((o) => String(o.orderId) === String(orderId)));
+    dispatch(updateOrderStatus({ orderId, status: newStatus }));
   };
 
   if (!order) {
@@ -73,9 +57,10 @@ const AdminOrderDetail = () => {
         <div className="aod-card">
           <h3>Customer</h3>
           <p>Name: {order.customerName || "N/A"}</p>
-          <p>Email: {order.userId || "N/A"}</p>
-          <p>Phone: {order.phone || "N/A"}</p>
-          <p>Address: {order.address || "N/A"}</p>
+          <p>Email: {order.userId || order.contactEmail || "N/A"}</p>
+          <p>Phone: {order.phone || order.shippingAddress?.phone || "N/A"}</p>
+          <p>Address: {order.address || order.shippingAddress?.address || "N/A"}</p>
+          <p>City: {order.city || order.shippingAddress?.city || "N/A"}</p>
         </div>
 
         <div className="aod-card">
@@ -109,7 +94,7 @@ const AdminOrderDetail = () => {
               <p>Qty: {item.quantity}</p>
             </div>
             <p className="aod-item-price">
-              {(item.price || 0) * (item.quantity || 1)} PKR
+              {Number(item.productPrice || item.price || 0) * (item.quantity || 1)} PKR
             </p>
           </div>
         ))}

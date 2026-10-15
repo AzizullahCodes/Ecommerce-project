@@ -1,42 +1,43 @@
-.admin-orders-page { padding: 20px; }
+.admin-orders-page { padding: 20px; animation: fadeInUp 0.7s var(--ease) both; }
 
-.admin-orders-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 20px;
-}
+.admin-orders-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
 
-.admin-orders-header h1 { margin: 0; font-size: 24px; }
-.admin-orders-header p { margin: 4px 0 0; color: #6b7280; }
+.admin-orders-header h1 { margin: 0; font-size: 24px; color: #fff; background: linear-gradient(120deg,#fff,#cbbaff); -webkit-background-clip:text; background-clip:text; color:transparent; }
+
+.admin-orders-header p { margin: 4px 0 0; color: var(--muted); }
 
 .admin-orders-controls { display: flex; gap: 10px; flex-wrap: wrap; }
 
 .admin-orders-controls input,
 .admin-orders-controls select {
-  padding: 9px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
   font-size: 14px;
+  background: rgba(13,10,35,0.55);
+  color: var(--text);
 }
 
 .admin-orders-controls input { min-width: 240px; }
 
 .admin-orders-empty {
-  background: #fff;
+  background: rgba(20,17,55,0.74);
+  border: 1px solid var(--border);
   padding: 40px;
   text-align: center;
-  border-radius: 12px;
-  color: #6b7280;
+  border-radius: 14px;
+  color: var(--muted);
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
 }
 
 .admin-orders-table-wrap {
   overflow-x: auto;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  background: rgba(20,17,55,0.74);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
 }
 
 .admin-orders-table { width: 100%; border-collapse: collapse; min-width: 800px; }
@@ -45,36 +46,24 @@
 .admin-orders-table td {
   padding: 12px 14px;
   text-align: left;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
   font-size: 14px;
+  color: var(--text);
 }
 
-.admin-orders-table th { background: #f8fafc; font-weight: 600; }
+.admin-orders-table th { background: rgba(124,92,255,0.14); font-weight: 600; color: var(--muted); text-transform: uppercase; font-size: 12px; letter-spacing: 0.05em; }
 
-.admin-status {
-  padding: 6px 10px;
-  border-radius: 20px;
-  border: none;
-  font-weight: 600;
-  text-transform: capitalize;
-  cursor: pointer;
-}
+.admin-orders-table tr { transition: background-color 0.2s var(--ease); }
+.admin-orders-table tr:hover { background: rgba(124,92,255,0.1); }
 
+.admin-status { padding: 6px 10px; border-radius: 20px; border: none; font-weight: 600; text-transform: capitalize; cursor: pointer; }
 .admin-status:disabled { cursor: not-allowed; opacity: 0.8; }
 
-.status-pending    { background: #fef3c7; color: #92400e; }
-.status-processing { background: #dbeafe; color: #1e40af; }
-.status-shipped    { background: #ede9fe; color: #5b21b6; }
-.status-delivered  { background: #dcfce7; color: #166534; }
-.status-cancelled  { background: #fee2e2; color: #991b1b; }
+.status-pending    { background: rgba(254,243,199,0.18); color: #fde68a; }
+.status-processing { background: rgba(219,234,254,0.18); color: #bfdbfe; }
+.status-shipped    { background: rgba(237,233,254,0.18); color: #ddd6fe; }
+.status-delivered  { background: rgba(220,252,231,0.18); color: #bbf7d0; }
+.status-cancelled  { background: rgba(254,226,226,0.18); color: #fecaca; }
 
-.admin-view-btn {
-  padding: 6px 14px;
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.admin-view-btn:hover { background: #1d4ed8; }
+.admin-view-btn { padding: 6px 14px; background: linear-gradient(120deg,var(--accent-2),var(--accent)); color: #fff; border: none; border-radius: 8px; cursor: pointer; transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease); }
+.admin-view-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(124,92,255,0.3); }

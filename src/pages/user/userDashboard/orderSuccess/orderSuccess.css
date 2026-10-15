@@ -1,0 +1,36 @@
+.success-page {
+  min-height: 70vh;
+  display: grid;
+  place-items: center;
+  animation: fadeInUp 0.8s var(--ease) both;
+}
+
+.success-card {
+  max-width: 480px;
+  width: 100%;
+  text-align: center;
+  padding: 32px;
+  border-radius: var(--radius);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow);
+  animation: fadeScale 0.7s var(--ease) both;
+}
+
+.success-card h1 {
+  background: linear-gradient(120deg, #7cffb2, #4dd0e1);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.success-card a {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: linear-gradient(120deg, var(--accent-2), var(--accent));
+  color: #fff;
+  text-decoration: none;
+}

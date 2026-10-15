@@ -1,0 +1,29 @@
+.edit-product-page {
+  animation: fadeInUp 0.7s var(--ease) both;
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.edit-product-page h1 {
+  background: linear-gradient(120deg, #fff, #bdaeff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.edit-product-page input,
+.edit-product-page select {
+  margin-bottom: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.edit-product-page button {
+  margin-right: 8px;
+  background: linear-gradient(120deg, var(--accent-2), var(--accent));
+  color: #fff;
+  border: 0;
+  padding: 10px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+}

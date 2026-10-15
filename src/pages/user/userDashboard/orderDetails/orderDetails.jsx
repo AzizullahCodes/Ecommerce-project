@@ -1,39 +1,26 @@
+import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { cancelOrder as cancelOrderAction } from '../../../../features/orders/ordersSlice.js';
 import "./OrderDetail.css";
 
 const OrderDetail = () => {
   const { orderId } = useParams(); // URL se orderId
   const navigate = useNavigate();
-  const [order, setOrder] = useState(null);
+  const dispatch = useDispatch();
+  const activeUser = useSelector((state) => state.auth.user);
+  const order = useSelector((state) => state.orders.items.find(
+    (o) => String(o.orderId) === String(orderId) && o.userId === activeUser?.email
+  )) || null;
 
   // timeline ke steps
   const steps = ["Pending", "Confirmed", "Shipped", "Delivered"];
 
-  // order dhoondo
-  useEffect(() => {
-    let allOrders = JSON.parse(localStorage.getItem("OrderHistory"));
-    let activeUser = JSON.parse(localStorage.getItem("loggedInUser"));
-
-    if (Array.isArray(allOrders)) {
-      let found = allOrders.find(
-        (o) => String(o.orderId) === orderId && o.userId === activeUser?.email
-      );
-      setOrder(found || null);
-    }
-  }, [orderId]);
-
   // Cancel Order
   const cancelOrder = () => {
-    let allOrders = JSON.parse(localStorage.getItem("OrderHistory")) || [];
-
-    let updated = allOrders.map((o) =>
-      o.orderId === order.orderId ? { ...o, status: "Cancelled" } : o
-    );
-    localStorage.setItem("OrderHistory", JSON.stringify(updated));
-
-    setOrder({ ...order, status: "Cancelled" });
+    if (!order) return;
+    dispatch(cancelOrderAction(order.orderId));
   };
 
   if (!order) {

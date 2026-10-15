@@ -1,5 +1,8 @@
-
-import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { deleteProduct } from '../../../../features/products/productsSlice.js';
+import './allProducts.css';
 import {
   MDBCard,
   MDBCardBody,
@@ -11,119 +14,96 @@ import {
   MDBRow,
   MDBCol
 } from 'mdb-react-ui-kit';
-import { use } from 'react';
-import { useNavigate } from 'react-router-dom';
 
 const AllProducts = () => {
-  const [fetchProducts, setFetchProducts] = useState([]);
-  //fetch loggedInUser from local storage 
-  const [authUser,setAuthUser] = useState(null)
-  //use state for orders handling 
-  const [bucket,setBucket] = useState([])
-  //useNavigat state
-  const naviagtion = useNavigate('');
-  //funtion for addItemToShoppingCart
-  const addItemToShoppingCart = (product)=>{
-  
-   if(!authUser){
-    alert('You are not authenticated \n plz login first')
-   }
-   else{
-     console.log(product)
-     //validation part 
-      let checking = bucket.some((item)=>{
-        return item.productId == product.productId
-      })
-      console.log(checking)
-     //validation part end
-     let bucketClone = [...bucket];
-     if(checking){
-      alert(`This product  is already added in cart`)
-      
-     }
-    
-     else {
-      //  console.log(bucketClone)
-     bucketClone.push(product);
-    //  console.log('updated bucket is....', bucketClone)
-     setBucket(bucketClone);
-     }
-     
-   }
-  }
-  console.log('final bucket is ....', bucket)
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const products = useSelector((state) => state.products.items);
+  const [search, setSearch] = useState('');
 
-  useEffect(() => {
-    let get = localStorage.getItem('productList');
-    if (get) {
-      let jsonData = JSON.parse(get);
-      jsonData && setFetchProducts(jsonData);
-      //fetching loggedInUser from local storage 
-      let user = localStorage.getItem('loggedInUser');
-      // console.log('user....',user)
-      if(user){
-        let jsonUser = JSON.parse(user);
-        // console.log(jsonUser) 
-        jsonUser && setAuthUser(jsonUser)
-      }
+  const filteredProducts = products.filter((product) => {
+    const text = search.trim().toLowerCase();
+    if (!text) return true;
+    return (
+      (product.productName || '').toLowerCase().includes(text) ||
+      (product.productDescription || '').toLowerCase().includes(text) ||
+      String(product.productPrice || '').toLowerCase().includes(text) ||
+      (product.category || '').toLowerCase().includes(text)
+    );
+  });
+
+  const handleDelete = (productId) => {
+    if (window.confirm('Delete this product?')) {
+      dispatch(deleteProduct(productId));
     }
-  }, []);
+  };
 
-  //procedd to add to cart function 
-  const proceedToCart = ()=>{
-    // console.log(bucket)
-    localStorage.setItem('YourOrders',JSON.stringify(bucket))
-    // naviagtion('/cart') 
-    localStorage.setItem('YourOrders', JSON.stringify(bucket));
-  window.dispatchEvent(new Event('cartUpdated')); // 👈 notify Navbar
-  // naviagtion('/cart')
-  }
-
-
-  
   return (
-    <div>
-      <h1>Products screen</h1>
+    <div className="all-products-page">
+      <h1>Manage Products</h1>
 
-      {(fetchProducts && fetchProducts.length > 0) ? (
+      <div style={{ marginBottom: 16, maxWidth: 360 }}>
+        <input
+          type="text"
+          placeholder="Search products"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          style={{ width: '100%', padding: 8 }}
+        />
+      </div>
+
+      {filteredProducts.length > 0 ? (
         <MDBRow>
-          {fetchProducts.map((product, index) => (
-            <MDBCol sm='4' key={index} className="mb-4">
+          {filteredProducts.map((product) => (
+            <MDBCol sm="4" key={product.productId ?? product.id} className="mb-4">
               <MDBCard>
-                <MDBRipple rippleColor='light' rippleTag='div' className='bg-image hover-overlay'>
-                  <MDBCardImage
-                    src={product.productImage}
-                    fluid
-                    alt={product.productName}
-                    style={{
-                      height: 100,
-                      width: 80,
-                      objectFit: 'contain'
-                    }}
-                  />
-                  <a>
-                    <div className='mask' style={{ backgroundColor: 'rgba(251, 251, 251, 0.15)' }}></div>
-                  </a>
+                <MDBRipple rippleColor="light" rippleTag="div" className="bg-image hover-overlay">
+                  {product.productImage ? (
+                    <MDBCardImage
+                      src={product.productImage}
+                      fluid
+                      alt={product.productName}
+                      style={{ height: 100, width: 80, objectFit: 'contain' }}
+                    />
+                  ) : (
+                    <div style={{ height: 100, width: 80, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      No image
+                    </div>
+                  )}
                 </MDBRipple>
                 <MDBCardBody>
                   <MDBCardTitle>{product.productName}</MDBCardTitle>
                   <MDBCardText>{product.productDescription}</MDBCardText>
-                  <MDBBtn onClick={()=>addItemToShoppingCart(product)}>Add to cart</MDBBtn>
+                  <MDBCardText>Price: {product.productPrice} PKR</MDBCardText>
+                  {product.category && <MDBCardText>Category: {product.category}</MDBCardText>}
+                  <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
+                    <MDBBtn
+                      size="sm"
+                      onClick={() => navigate(`/adminDashboard/products/editProduct/${product.productId ?? product.id}`)}
+                    >
+                      Edit
+                    </MDBBtn>
+                    <MDBBtn
+                      size="sm"
+                      color="danger"
+                      onClick={() => handleDelete(product.productId ?? product.id)}
+                    >
+                      Delete
+                    </MDBBtn>
+                  </div>
                 </MDBCardBody>
               </MDBCard>
             </MDBCol>
           ))}
         </MDBRow>
       ) : (
-        <h1>No product found</h1>
+        <h1>No products found</h1>
       )}
-      {/* button for proceed */}
-       <div className="d-grid gap-2 col-6 mx-auto">
-      <MDBBtn onClick={proceedToCart}>Proceed</MDBBtn>
-      
+
+      <div className="d-grid gap-2 col-6 mx-auto mt-3">
+        <MDBBtn onClick={() => navigate('/adminDashboard/products/addProduct')}>Add New Product</MDBBtn>
+      </div>
     </div>
-    </div>
-    
   );
 };
 

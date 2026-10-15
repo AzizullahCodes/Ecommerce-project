@@ -5,17 +5,12 @@ import "./userSidebar.css";
 const BASE = "/userDashboard";
 
 const links = [
-  { to: BASE, label: "Home", icon: "🏠", end: true },
-  { to: `${BASE}/products`, label: "Products", icon: "📦" },
-  { to: `${BASE}/cart`, label: "Cart", icon: "🛒" },
-  { to: `${BASE}/checkout`, label: "Checkout", icon: "💳" },
-  { to: `${BASE}/orders`, label: "My Orders", icon: "📋" },
-  {to : `${BASE}/orderDetails`,label: "Order Detail",icon : "📋"},
-  {to: `${BASE}/orderSuccess`, label: "Order Success",icon: "📋"},
-  { to: `${BASE}/wishlist`, label: "Wishlist", icon: "❤️" },
-  { to: `${BASE}/reviews`, label: "Reviews", icon: "⭐" },
-  { to: `${BASE}/profile`, label: "Profile", icon: "👤" },
-  { to: `${BASE}/changePassword`, label: "Change Password", icon: "🔒" },
+  { to: BASE, label: "Home", end: true },
+  { to: `${BASE}/products`, label: "Products" },
+  { to: `${BASE}/cart`, label: "Cart" },
+  { to: `${BASE}/checkout`, label: "Checkout" },
+  { to: `${BASE}/orders`, label: "My Orders" },
+  { to: `${BASE}/profile`, label: "Profile" },
 ];
 
 const linkClass = ({ isActive }) =>
@@ -31,7 +26,7 @@ const UserSidebar = () => {
       <nav className="sidebar-nav">
         {links.map((item) => (
           <NavLink key={item.to} to={item.to} end={item.end} className={linkClass}>
-            {item.icon} {item.label}
+            {item.label}
           </NavLink>
         ))}
       </nav>

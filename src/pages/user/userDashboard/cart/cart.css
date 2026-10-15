@@ -1,0 +1,21 @@
+.cart-page {
+  animation: fadeInUp 0.7s var(--ease) both;
+}
+
+.cart-page h1 {
+  background: linear-gradient(120deg, #fff, #bdaeff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.cart-page .card {
+  animation: fadeScale 0.5s var(--ease) both;
+  overflow: hidden;
+}
+
+.cart-page .btn {
+  background: linear-gradient(120deg, var(--accent-2), var(--accent));
+  color: #fff;
+  border: 0;
+}

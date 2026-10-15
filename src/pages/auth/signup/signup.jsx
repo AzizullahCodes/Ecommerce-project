@@ -1,5 +1,7 @@
+import { useDispatch, useSelector } from "../../../context/AppContext.jsx";
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { addUser } from '../../../features/users/usersSlice.js';
 import './signup.css';
 
 const Signup = () => {
@@ -8,6 +10,8 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('user');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.items);
 
   const handleSignup = (e) => {
     e.preventDefault();
@@ -20,16 +24,17 @@ const Signup = () => {
       return;
     }
 
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-
     const alreadyExists = users.some((item) => item.email?.toLowerCase() === cleanEmail);
     if (alreadyExists) {
       alert('user with this email already exists');
       return;
     }
 
-    users.push({ name: cleanName, email: cleanEmail, password, role });
-    localStorage.setItem('users', JSON.stringify(users));
+    if (cleanName.length < 2) { alert('name must be at least 2 characters'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) { alert('please enter a valid email'); return; }
+    if (password.length < 6) { alert('password must be at least 6 characters'); return; }
+
+    dispatch(addUser({ name: cleanName, email: cleanEmail, password, role }));
 
     alert('account created, now login');
     navigate('/login');

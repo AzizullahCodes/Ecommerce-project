@@ -1,8 +1,9 @@
+import { useDispatch, useSelector } from "../../../context/AppContext.jsx";
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { useAuth } from '../../../context/authContext/authContext';
+import { setUser } from '../../../features/auth/authSlice.js';
 import './login.css';
 
 const Login = () => {
@@ -10,7 +11,8 @@ const Login = () => {
   const [password, setPassword] = useState('');
 
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.items);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -21,8 +23,6 @@ const Login = () => {
       alert('Email & password required');
       return;
     }
-
-    const users = JSON.parse(localStorage.getItem('users')) || [];
 
     const foundUser = users.find(
       (item) =>
@@ -41,10 +41,8 @@ const Login = () => {
       role: foundUser.role,
     };
 
-    // Save in Context
-    login(userData);
-    //save in local storage also 
-    localStorage.setItem('loggedInUser',JSON.stringify(userData))
+    // Save in Redux (store persists to localStorage)
+    dispatch(setUser(userData));
 
     // Save in Cookie
     Cookies.set(
@@ -105,4 +103,5 @@ const Login = () => {
 };
 
 export default Login;
+
 
