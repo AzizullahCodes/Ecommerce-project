@@ -1,7 +1,8 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 //AddProducts.jsx 
 import React, { useState } from 'react'
-import { addProduct } from '../../../../features/products/productsSlice.js'
+import { addProduct } from '../../../../store/slices/products/productsSlice.js'
+import { showError, showSuccess } from '../../../../utils/sweetAlert.js'
 import { PRODUCT_CATEGORIES } from '../../../../data/defaultProducts.js'
 import './addProduct.css'
 
@@ -15,16 +16,22 @@ const AddProducts = () => {
     const [productPrice,setProductPrice] = useState('');
     const [productCategory,setProductCategory] = useState(PRODUCT_CATEGORIES[0]);
 
-    //addProductsHandler 
-    const addProductsHandler = (e)=>{
+    //addProductsHandler
+    const addProductsHandler = async (e)=>{
         e?.preventDefault?.();
 
         if (!productName.trim() || !productPrice.trim()) {
-            alert('Product name and price are required');
+            await showError('Missing details', 'Product name and price are required');
             return;
         }
-        if (productName.trim().length < 2) { alert('Product name must be at least 2 characters'); return; }
-        if (isNaN(Number(productPrice)) || Number(productPrice) <= 0) { alert('Product price must be a positive number'); return; }
+        if (productName.trim().length < 2) {
+            await showError('Invalid name', 'Product name must be at least 2 characters');
+            return;
+        }
+        if (isNaN(Number(productPrice)) || Number(productPrice) <= 0) {
+            await showError('Invalid price', 'Product price must be a positive number');
+            return;
+        }
 
         let obj = {
             productId : Date.now().toString(),
@@ -38,13 +45,13 @@ const AddProducts = () => {
 
         dispatch(addProduct(obj));
 
-        // clear states 
+        // clear states
         setProductName('');
         setProductImage('');
         setProductDescription('');
         setProductPrice('');
         setProductCategory(PRODUCT_CATEGORIES[0]);
-        alert('Product added successfully');
+        await showSuccess('Product added', `${productName} has been added to your store`);
     }
 
     return (

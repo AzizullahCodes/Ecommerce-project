@@ -1,9 +1,10 @@
-import { useDispatch, useSelector } from "../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
-import { setUser } from '../../../features/auth/authSlice.js';
+import { setUser } from '../../../store/slices/auth/authSlice.js';
+import { showError, showSuccess } from '../../../utils/sweetAlert.js';
 import './login.css';
 
 const Login = () => {
@@ -14,13 +15,13 @@ const Login = () => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.items);
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
     const cleanEmail = email.trim().toLowerCase();
 
     if (!cleanEmail || !password) {
-      alert('Email & password required');
+      await showError('Missing details', 'Email & password are required');
       return;
     }
 
@@ -31,7 +32,7 @@ const Login = () => {
     );
 
     if (!foundUser) {
-      alert('Invalid email or password');
+      await showError('Login failed', 'Invalid email or password');
       return;
     }
 
@@ -54,7 +55,7 @@ const Login = () => {
       }
     );
 
-    alert('You have logged in successfully');
+    await showSuccess('Logged in', 'You have logged in successfully');
 
     navigate(
       foundUser.role === 'admin'

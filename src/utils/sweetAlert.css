@@ -1,0 +1,106 @@
+/* SweetAlert2 ka look — app ke purple/indigo theme ke sath match.
+   App ke global rules (index.css) se bachne ke liye overrides zaroori hain:
+   - "h1, h2, h3 { color: #ffffff !important }"  → title white ho raha tha
+   - global "button:hover / :active" rules        → swal buttons hil rahe the */
+
+.swal2-popup {
+  border-radius: 14px;
+  font-family: inherit;
+  padding: 1.5rem;
+  background: #ffffff;
+}
+
+.swal2-title {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: normal;
+  color: #1e1e2f !important;
+  background: none;
+  -webkit-background-clip: initial;
+  background-clip: initial;
+}
+
+.swal2-html-container {
+  font-size: 14px;
+  color: #4b5563 !important;
+  margin: 0;
+}
+
+.swal2-confirm,
+.swal2-cancel {
+  border-radius: 8px !important;
+  padding: 10px 22px !important;
+  font-weight: 600;
+  font-size: 14px;
+  box-shadow: none !important;
+  margin: 0 6px;
+}
+
+/* App ke global button hover/active rules ko reset karte hain */
+.swal2-confirm,
+.swal2-cancel,
+.swal2-deny {
+  transition: background-color 0.2s ease, opacity 0.2s ease !important;
+}
+
+.swal2-confirm:hover,
+.swal2-cancel:hover,
+.swal2-deny:hover {
+  transform: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+.swal2-confirm:active,
+.swal2-cancel:active,
+.swal2-deny:active {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.swal2-confirm {
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+}
+
+.swal2-cancel {
+  background: #ececf5 !important;
+  color: #4b5563 !important;
+}
+
+.swal2-confirm:focus,
+.swal2-cancel:focus {
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.25) !important;
+}
+
+.swal2-icon-success {
+  border-color: #10b981 !important;
+}
+
+.swal2-icon-success .swal2-success-ring {
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+.swal2-icon-error {
+  border-color: #ef4444 !important;
+}
+
+.swal2-icon-error .swal2-x-mark {
+  color: #ef4444 !important;
+}
+
+.swal2-icon-warning {
+  border-color: #f59e0b !important;
+}
+
+.swal2-icon-warning .swal2-warning-ring {
+  border-color: rgba(245, 158, 11, 0.25) !important;
+}
+
+.swal2-icon-info {
+  border-color: #3b82f6 !important;
+}
+
+.swal2-icon-info .swal2-info-ring {
+  border-color: rgba(59, 130, 246, 0.25) !important;
+}

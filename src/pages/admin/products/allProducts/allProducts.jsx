@@ -1,7 +1,8 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { deleteProduct } from '../../../../features/products/productsSlice.js';
+import { deleteProduct } from '../../../../store/slices/products/productsSlice.js';
+import { showConfirm } from '../../../../utils/sweetAlert.js';
 import './allProducts.css';
 import {
   MDBCard,
@@ -32,8 +33,14 @@ const AllProducts = () => {
     );
   });
 
-  const handleDelete = (productId) => {
-    if (window.confirm('Delete this product?')) {
+  const handleDelete = async (productId) => {
+    const confirmed = await showConfirm(
+      'Delete product?',
+      'This product will be removed from your store. This cannot be undone.',
+      'Yes, delete it'
+    );
+
+    if (confirmed) {
       dispatch(deleteProduct(productId));
     }
   };

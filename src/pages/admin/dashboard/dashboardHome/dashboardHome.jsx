@@ -1,5 +1,5 @@
 import React from "react";
-import { useSelector } from "../../../../context/AppContext.jsx";
+import { useSelector } from 'react-redux';
 import './dashboardHome.css';
 
 const DashboardHome = () => {

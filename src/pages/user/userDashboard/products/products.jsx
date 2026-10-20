@@ -1,8 +1,7 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useDispatch, useSelector, useStore } from "react-redux";
 import './products.css';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addToCart } from '../../../../features/cart/cartSlice.js';
 import { PRODUCT_CATEGORIES } from '../../../../data/defaultProducts.js';
 import {
   MDBCard,
@@ -16,15 +15,19 @@ import {
   MDBCol,
   MDBInput,
 } from 'mdb-react-ui-kit';
+import { addToCart } from "../../../../store/slices/cart/cartSlice.js";
+import { selectCartCount, selectCartItems } from "../../../../store/slices/cart/cartSelectors.js";
+import { showAddedToCart, showError } from "../../../../utils/sweetAlert.js";
 
 const ProductsPage = () => {
   const dispatch = useDispatch();
+  const store = useStore();
+  const items = useSelector(selectCartItems);
   const navigate = useNavigate();
 
   // Redux store se data nikalna
-  const products = useSelector((reduxState) => reduxState.products.items);
-  const cartItems = useSelector((reduxState) => reduxState.cart.items);
-  const currentUser = useSelector((reduxState) => reduxState.auth.user);
+  const products = useSelector((state) => state.products.items);
+  const currentUser = useSelector((state) => state.auth.user);
 
   // Search aur category ki values
   const [search, setSearch] = useState('');
@@ -51,15 +54,22 @@ const ProductsPage = () => {
   });
 
   // Cart mein product add karna
-  const handleAddToCart = (product) => {
+  const handleAddToCart = async (product) => {
     // Login nahi hai to add nahi karne dena
     if (!currentUser) {
-      alert('You are not authenticated\nPlease login first');
-      return;
+      await showError('Not logged in', 'Please login first to add items to your cart.')
+      return
     }
 
-    dispatch(addToCart(product));
-    alert('Added to cart');
+    dispatch(addToCart(product))
+
+    // Cart ka naya count nikal ke alert me dikhate hain
+    const newCount = selectCartCount(store.getState())
+    const goToCart = await showAddedToCart(product.productName, newCount)
+
+    if (goToCart) {
+      navigate('/userDashboard/cart')
+    }
   };
 
   return (
@@ -137,7 +147,7 @@ const ProductsPage = () => {
       )}
 
       {/* Cart ki info aur button */}
-      <p>{cartItems.length} product type(s) in your cart</p>
+      <p>{items.length} product type(s) in your cart</p>
       <div className="d-grid gap-2 col-6 mx-auto">
         <MDBBtn onClick={() => navigate('/userDashboard/cart')}>Proceed to cart</MDBBtn>
       </div>

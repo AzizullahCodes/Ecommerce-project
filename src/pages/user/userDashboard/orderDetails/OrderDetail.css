@@ -194,6 +194,17 @@
   padding: 4px;
 }
 
+/* Jab product ki image na ho to placeholder box */
+.detail-item-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: center;
+  padding: 4px;
+}
+
 .detail-item-info {
   flex: 1;
 }

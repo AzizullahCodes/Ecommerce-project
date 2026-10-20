@@ -1,7 +1,7 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { updateOrderStatus } from '../../../../features/orders/ordersSlice.js';
+import { updateOrderStatus } from '../../../../store/slices/orders/ordersSlice.js';
 import "./adminOrderDetail.css";
 
 const STATUS_LIST = ["pending", "processing", "shipped", "delivered", "cancelled"];
@@ -88,7 +88,13 @@ const AdminOrderDetail = () => {
 
         {order.bucket?.map((item) => (
           <div className="aod-item" key={item.productId}>
-            <img src={item.productImage} alt={item.productName} />
+            {item.productImage ? (
+              <img src={item.productImage} alt={item.productName} />
+            ) : (
+              <div className="aod-item-img aod-item-placeholder">
+                {item.category || 'Product'}
+              </div>
+            )}
             <div className="aod-item-info">
               <p className="aod-item-name">{item.productName}</p>
               <p>Qty: {item.quantity}</p>

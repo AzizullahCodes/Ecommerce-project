@@ -1,7 +1,8 @@
-import { useDispatch, useSelector } from "../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { addUser } from '../../../features/users/usersSlice.js';
+import { addUser } from '../../../store/slices/users/usersSlice.js';
+import { showError, showSuccess } from '../../../utils/sweetAlert.js';
 import './signup.css';
 
 const Signup = () => {
@@ -13,30 +14,39 @@ const Signup = () => {
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.items);
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
 
     const cleanName = name.trim();
     const cleanEmail = email.trim().toLowerCase();
 
     if (!cleanName || !cleanEmail || !password || !role) {
-      alert('plz fill all fields');
+      await showError('Missing details', 'Please fill all the fields');
       return;
     }
 
     const alreadyExists = users.some((item) => item.email?.toLowerCase() === cleanEmail);
     if (alreadyExists) {
-      alert('user with this email already exists');
+      await showError('Account exists', 'A user with this email already exists');
       return;
     }
 
-    if (cleanName.length < 2) { alert('name must be at least 2 characters'); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) { alert('please enter a valid email'); return; }
-    if (password.length < 6) { alert('password must be at least 6 characters'); return; }
+    if (cleanName.length < 2) {
+      await showError('Invalid name', 'Name must be at least 2 characters');
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+      await showError('Invalid email', 'Please enter a valid email address');
+      return;
+    }
+    if (password.length < 6) {
+      await showError('Weak password', 'Password must be at least 6 characters');
+      return;
+    }
 
     dispatch(addUser({ name: cleanName, email: cleanEmail, password, role }));
 
-    alert('account created, now login');
+    await showSuccess('Account created', 'You can now log in with your new account');
     navigate('/login');
   };
 

@@ -47,6 +47,25 @@
 }
 
 .aod-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
+
+/* Jab product ki image na ho to placeholder box */
+.aod-item-img {
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.aod-item-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 8px;
+  font-size: 10px;
+  color: #94a3b8;
+  text-align: center;
+  padding: 4px;
+}
 .aod-item-info { flex: 1; }
 .aod-item-name { font-weight: 600; }
 .aod-item-price { font-weight: 600; }

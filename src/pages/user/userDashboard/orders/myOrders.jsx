@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useSelector } from 'react-redux';
 
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -189,10 +189,12 @@ const MyOrders = () => {
                         className="product-preview-item"
                         key={item.productId}
                       >
-                        <img
-                          src={item.productImage}
-                          alt={item.productName}
-                        />
+                        {item.productImage && (
+                          <img
+                            src={item.productImage}
+                            alt={item.productName}
+                          />
+                        )}
 
                         <div>
                           <p className="product-name">

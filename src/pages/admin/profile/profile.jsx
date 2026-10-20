@@ -1,8 +1,8 @@
-import { useDispatch, useSelector } from "../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { clearUser } from "../../../features/auth/authSlice";
+import { clearUser } from "../../../store/slices/auth/authSlice";
 import "./Profile.css";
 
 const AdminProfile = () => {

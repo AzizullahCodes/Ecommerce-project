@@ -1,7 +1,7 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react'
-import { clearCart } from '../../../../features/cart/cartSlice.js'
-import { createOrder } from '../../../../features/orders/ordersSlice.js'
+import { clearCart } from '../../../../store/slices/cart/cartSlice.js'
+import { createOrder } from '../../../../store/slices/orders/ordersSlice.js'
 import { useNavigate } from 'react-router-dom'
 import './checkout.css'
 
@@ -33,11 +33,16 @@ const CheckOut = () => {
       navigate('/login')
       return
     }
+    // Order place karte waqt cart khaali ho jata hai, is liye us waqt
+    // cart page pe redirect nahi karna — warna order confirmation skip ho jata hai
+    if (isPlacing) {
+      return
+    }
     if (currentOrders.length === 0) {
       navigate('/userDashboard/cart')
       return
     }
-  }, [nowActiveUser, currentOrders.length, navigate])
+  }, [nowActiveUser, currentOrders.length, isPlacing, navigate])
 
   const clearError = (field) => {
     setErrors((prev) => {
@@ -263,11 +268,13 @@ const CheckOut = () => {
               <ul className="summary-items">
                 {currentOrders.map((item) => (
                   <li key={item.productId} className="summary-item">
-                    <img
-                      src={item.productImage}
-                      alt={item.productName}
-                      onError={(e) => { e.target.style.display = 'none' }}
-                    />
+                    {item.productImage && (
+                      <img
+                        src={item.productImage}
+                        alt={item.productName}
+                        onError={(e) => { e.target.style.display = 'none' }}
+                      />
+                    )}
                     <div className="item-info">
                       <span className="item-name">{item.productName}</span>
                       <span className="item-qty">Qty: {item.quantity || 1}</span>

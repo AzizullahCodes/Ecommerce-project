@@ -1,7 +1,7 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { updateOrderStatus } from '../../../../features/orders/ordersSlice.js';
+import { updateOrderStatus } from '../../../../store/slices/orders/ordersSlice.js';
 import "./adminAllOrders.css";
 
 const STATUS_LIST = ["pending", "processing", "shipped", "delivered", "cancelled"];

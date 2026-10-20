@@ -1,8 +1,8 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { cancelOrder as cancelOrderAction } from '../../../../features/orders/ordersSlice.js';
+import { cancelOrder as cancelOrderAction } from '../../../../store/slices/orders/ordersSlice.js';
 import "./OrderDetail.css";
 
 const OrderDetail = () => {
@@ -98,11 +98,17 @@ const OrderDetail = () => {
         <ul className="detail-items">
           {order.bucket.map((item) => (
             <li key={item.productId} className="detail-item">
-              <img
-                className="detail-item-img"
-                src={item.productImage}
-                alt={item.productName}
-              />
+              {item.productImage ? (
+                <img
+                  className="detail-item-img"
+                  src={item.productImage}
+                  alt={item.productName}
+                />
+              ) : (
+                <div className="detail-item-img detail-item-placeholder">
+                  {item.category || 'Product'}
+                </div>
+              )}
               <div className="detail-item-info">
                 <h4>{item.productName}</h4>
                 <p>

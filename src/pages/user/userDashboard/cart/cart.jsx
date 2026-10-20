@@ -1,6 +1,6 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 import React from 'react';
-import { changeQuantity, setQuantity, removeFromCart } from '../../../../features/cart/cartSlice.js';
+import { changeQuantity, setQuantity, removeFromCart } from '../../../../store/slices/cart/cartSlice.js';
 import { useNavigate } from 'react-router-dom';
 import './cart.css';
 import { MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBCardImage, MDBBtn, MDBRipple, MDBRow, MDBCol } from 'mdb-react-ui-kit';
@@ -20,7 +20,22 @@ const Cart = () => {
             <MDBCol sm="4" key={product.productId} className="mb-4">
               <MDBCard>
                 <MDBRipple rippleColor="light" rippleTag="div" className="bg-image hover-overlay">
-                  <MDBCardImage src={product.productImage} fluid alt={product.productName} style={{ height: 100, width: 80, objectFit: 'contain' }} />
+                  {product.productImage ? (
+                    <MDBCardImage src={product.productImage} fluid alt={product.productName} style={{ height: 100, width: 80, objectFit: 'contain' }} />
+                  ) : (
+                    <div
+                      style={{
+                        height: 100,
+                        width: 80,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        background: '#f1f1f1',
+                      }}
+                    >
+                      {product.category || 'Product'}
+                    </div>
+                  )}
                   <a><div className="mask" style={{ backgroundColor: 'rgba(251, 251, 251, 0.15)' }} /></a>
                 </MDBRipple>
                 <MDBCardBody>

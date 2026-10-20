@@ -1,7 +1,8 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useDispatch, useSelector } from 'react-redux';
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { updateProduct } from '../../../../features/products/productsSlice.js';
+import { updateProduct } from '../../../../store/slices/products/productsSlice.js';
+import { showError, showSuccess } from '../../../../utils/sweetAlert.js';
 import { PRODUCT_CATEGORIES } from '../../../../data/defaultProducts.js';
 import './editProduct.css';
 
@@ -28,15 +29,24 @@ const EditProduct = () => {
     }
   }, [product]);
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async (e) => {
     e?.preventDefault?.();
-    if (!product) { alert('Product not found'); return; }
-    if (!productName.trim() || !productPrice.trim()) {
-      alert('Product name and price are required');
+    if (!product) {
+      await showError('Not found', 'Product not found');
       return;
     }
-    if (productName.trim().length < 2) { alert('Product name must be at least 2 characters'); return; }
-    if (isNaN(Number(productPrice)) || Number(productPrice) <= 0) { alert('Product price must be a positive number'); return; }
+    if (!productName.trim() || !productPrice.trim()) {
+      await showError('Missing details', 'Product name and price are required');
+      return;
+    }
+    if (productName.trim().length < 2) {
+      await showError('Invalid name', 'Product name must be at least 2 characters');
+      return;
+    }
+    if (isNaN(Number(productPrice)) || Number(productPrice) <= 0) {
+      await showError('Invalid price', 'Product price must be a positive number');
+      return;
+    }
     dispatch(updateProduct({
       productId: product.productId ?? product.id,
       productName,
@@ -45,7 +55,7 @@ const EditProduct = () => {
       productPrice,
       category: productCategory,
     }));
-    alert('Product updated');
+    await showSuccess('Product updated', `${productName} has been updated`);
     navigate('/adminDashboard/products');
   };
 

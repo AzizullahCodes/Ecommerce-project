@@ -7,3 +7,13 @@ export const getArrayFromStorage = (key) => {
     return []
   }
 }
+
+// localStorage se single object nikalta hai, kuch na mile ya corrupt ho to null
+export const getObjectFromStorage = (key) => {
+  try {
+    const data = JSON.parse(localStorage.getItem(key))
+    return data ?? null
+  } catch {
+    return null
+  }
+}

@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useSelector } from 'react-redux';
 import React from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import './orderSuccess.css'

@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "../../../../context/AppContext.jsx";
+import { useSelector } from 'react-redux';
 import React, { useState } from "react";
 import "./allUsers.css";
 

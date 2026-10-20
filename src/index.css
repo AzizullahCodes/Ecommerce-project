@@ -413,8 +413,6 @@ p {
     position: relative;
   }
 }
-EOF
-echo written
 /* === Full redesign pass === */
 *::selection {
   background: rgba(124, 92, 255, 0.5);
