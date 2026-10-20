@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { deleteProduct } from '../../../../store/slices/products/productsSlice.js';
-import { showConfirm } from '../../../../utils/sweetAlert.js';
+import { deleteProduct, restoreDefaultProducts } from '../../../../store/slices/products/productsSlice.js';
+import { showConfirm, showSuccess } from '../../../../utils/sweetAlert.js';
 import './allProducts.css';
 import {
   MDBCard,
@@ -20,6 +20,7 @@ const AllProducts = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const products = useSelector((state) => state.products.items);
+  const deletedIds = useSelector((state) => state.products.deletedIds);
   const [search, setSearch] = useState('');
 
   const filteredProducts = products.filter((product) => {
@@ -45,6 +46,19 @@ const AllProducts = () => {
     }
   };
 
+  const handleRestoreDefaults = async () => {
+    const confirmed = await showConfirm(
+      'Restore default products?',
+      'All the default products will come back. Products you added yourself will stay.',
+      'Yes, restore them'
+    );
+
+    if (confirmed) {
+      dispatch(restoreDefaultProducts());
+      await showSuccess('Defaults restored', 'All default products are back in your store');
+    }
+  };
+
   return (
     <div className="all-products-page">
       <h1>Manage Products</h1>
@@ -58,6 +72,15 @@ const AllProducts = () => {
           style={{ width: '100%', padding: 8 }}
         />
       </div>
+
+      {/* Default products delete hue hon to wapas laane ka option */}
+      {deletedIds.length > 0 && (
+        <div style={{ marginBottom: 16 }}>
+          <MDBBtn color="warning" onClick={handleRestoreDefaults}>
+            Restore {deletedIds.length} default product(s)
+          </MDBBtn>
+        </div>
+      )}
 
       {filteredProducts.length > 0 ? (
         <MDBRow>

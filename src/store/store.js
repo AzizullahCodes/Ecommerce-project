@@ -17,9 +17,9 @@ export const store = configureStore({
   },
 })
 
-// Har change ke baad state ko localStorage me save karte hain,
-// taake page reload ke baad bhi data waise hi rahe.
-store.subscribe(() => {
+// State ko localStorage me save karte hain, taake page reload ke baad
+// bhi data waise hi rahe.
+const persistState = () => {
   const { auth, users, products, cart, orders } = store.getState()
 
   if (auth.user) {
@@ -30,8 +30,19 @@ store.subscribe(() => {
 
   localStorage.setItem('users', JSON.stringify(users.items))
   localStorage.setItem('productList', JSON.stringify(products.items))
+  localStorage.setItem('deletedProductIds', JSON.stringify(products.deletedIds))
   localStorage.setItem('YourOrders', JSON.stringify(cart.items))
   localStorage.setItem('OrderHistory', JSON.stringify(orders.items))
-})
+
+  // Purana flag ab zaroorat ka nahi — default products hamesha catalog me rehte hain
+  localStorage.removeItem('productListSeeded')
+}
+
+// Har change ke baad save karo
+store.subscribe(persistState)
+
+// App start hote hi bhi ek baar save karo, taake localStorage
+// turant store ke sath match kare
+persistState()
 
 export default store
