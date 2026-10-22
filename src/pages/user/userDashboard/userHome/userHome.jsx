@@ -1,90 +1,252 @@
-import { useSelector } from 'react-redux';
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch, useStore } from "react-redux";
+import { addToCart } from "../../../../store/slices/cart/cartSlice.js";
+import { selectCartCount } from "../../../../store/slices/cart/cartSelectors.js";
+import { showAddedToCart, showError } from "../../../../utils/sweetAlert.js";
+import { PRODUCT_CATEGORIES } from "../../../../data/defaultProducts.js";
 import "./userHome.css";
 
 const BASE = "/userDashboard";
 
+const categoryIcons = {
+  Laptops: "💻",
+  Keyboards: "⌨️",
+  Mouse: "🖱️",
+  "Mobile Phones": "📱",
+};
+
 const UserHome = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const store = useStore();
+
   const user = useSelector((state) => state.auth.user);
   const products = useSelector((state) => state.products.items);
   const orders = useSelector((state) => state.orders.items);
   const cartItems = useSelector((state) => state.cart.items);
 
-  const name = user?.name || "User";
+  const name = user?.name || "Customer";
   const myOrders = orders
     .filter((order) => order.userId === user?.email)
     .slice()
     .reverse();
   const recentOrders = myOrders.slice(0, 3);
-  const featuredProducts = products.slice(0, 4);
+  const featuredProducts = products.slice(0, 8);
 
-  const stats = [
-    { label: "Cart Items", value: cartItems.length, to: `${BASE}/cart` },
-    { label: "My Orders", value: myOrders.length, to: `${BASE}/orders` },
-    { label: "Products", value: products.length, to: `${BASE}/products` },
-  ];
+  const handleAddToCart = async (product) => {
+    if (!user) {
+      await showError("Login Required", "Please log in to add items to your cart.");
+      return;
+    }
+    dispatch(addToCart(product));
+    const newCount = selectCartCount(store.getState());
+    const goToCart = await showAddedToCart(product.productName, newCount);
+    if (goToCart) {
+      navigate(`${BASE}/cart`);
+    }
+  };
 
   return (
-    <div className="home">
-      <div className="home-welcome">
-        <h1>Welcome back, {name}</h1>
-        <p>Explore new products or check your orders.</p>
-        <Link to={`${BASE}/products`} className="home-btn">
-          Shop Now
-        </Link>
-      </div>
-
-      <div className="home-stats">
-        {stats.map((s) => (
-          <Link key={s.label} to={s.to} className="home-stat">
-            <span className="home-stat-icon">📦</span>
-            <div>
-              <h2>{s.value}</h2>
-              <p>{s.label}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      <div className="home-section">
-        <div className="home-section-head">
-          <h3>Featured Products</h3>
-          <Link to={`${BASE}/products`}>View All</Link>
-        </div>
-
-        <div className="home-products">
-          {featuredProducts.length === 0 ? (
-            <p>No products available.</p>
-          ) : (
-            featuredProducts.map((product) => (
-              <div key={product.productId ?? product.id} className="home-product">
-                <h4>{product.productName}</h4>
-                <p>Rs. {product.productPrice}</p>
-                <Link to={`${BASE}/products/${product.productId ?? product.id}`}>View Details</Link>
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-
-      <div className="home-section">
-        <div className="home-section-head">
-          <h3>Recent Orders</h3>
-          <Link to={`${BASE}/orders`}>View All</Link>
-        </div>
-
-        {recentOrders.length === 0 ? (
-          <p>No orders yet.</p>
-        ) : (
-          recentOrders.map((order) => (
-            <Link key={order.orderId} to={`${BASE}/orderDetails/${order.orderId}`} className="home-order">
-              <span>#{order.orderId} - {order.bucket?.length || 0} item(s)</span>
-              <span className="home-status">{order.status || "Pending"}</span>
+    <div className="home-container">
+      {/* Hero Banner */}
+      <section className="home-hero-banner">
+        <div className="hero-content">
+          <div className="hero-badge">
+            <span className="badge-dot">●</span> WELCOME {name.toUpperCase()} · MEGA ELECTRONICS SALE
+          </div>
+          <h1 className="hero-headline">
+            Next-Gen Tech Essentials <br />
+            <span>Built For Peak Performance</span>
+          </h1>
+          <p className="hero-subtext">
+            Discover cutting-edge laptops, ergonomic accessories, mechanical keyboards
+            and flagship smartphones — all with official warranty and rapid shipping.
+          </p>
+          <div className="hero-actions">
+            <Link to={`${BASE}/products`} className="hero-primary-btn">
+              <span>Explore All Products</span>
+              <span className="btn-arrow">→</span>
             </Link>
-          ))
-        )}
-      </div>
+            <Link to={`${BASE}/cart`} className="hero-secondary-btn">
+              View Cart ({cartItems.length})
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust & Guarantee Strip */}
+      <section className="trust-strip">
+        <div className="trust-item">
+          <span className="trust-icon">🚚</span>
+          <div>
+            <h4>Fast Nationwide Delivery</h4>
+            <p>Reliable dispatch directly to your doorstep</p>
+          </div>
+        </div>
+        <div className="trust-item">
+          <span className="trust-icon">🛡️</span>
+          <div>
+            <h4>100% Genuine Tech</h4>
+            <p>Official manufacturer warranty on all items</p>
+          </div>
+        </div>
+        <div className="trust-item">
+          <span className="trust-icon">💳</span>
+          <div>
+            <h4>Cash On Delivery</h4>
+            <p>Pay when you inspect your package</p>
+          </div>
+        </div>
+        <div className="trust-item">
+          <span className="trust-icon">🔄</span>
+          <div>
+            <h4>7 Days Easy Return</h4>
+            <p>Guaranteed replacement & satisfaction</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Category Browse Cards */}
+      <section className="home-categories-section">
+        <div className="section-header">
+          <div>
+            <h2 className="section-title">Shop by Category</h2>
+            <p className="section-subtitle">Select a category to view high-performance hardware</p>
+          </div>
+        </div>
+        <div className="category-cards-grid">
+          {PRODUCT_CATEGORIES.map((cat) => {
+            const count = products.filter((p) => p.category === cat).length;
+            return (
+              <div
+                key={cat}
+                className="category-card"
+                onClick={() => navigate(`${BASE}/products?category=${encodeURIComponent(cat)}`)}
+              >
+                <span className="cat-icon">{categoryIcons[cat] || "📦"}</span>
+                <div className="cat-info">
+                  <h3>{cat}</h3>
+                  <span>{count} Products</span>
+                </div>
+                <span className="cat-link-icon">→</span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Featured Products Showcase */}
+      <section className="featured-section">
+        <div className="section-header">
+          <div>
+            <h2 className="section-title">Featured Products</h2>
+            <p className="section-subtitle">Top-rated tech picks recommended by our specialists</p>
+          </div>
+          <Link to={`${BASE}/products`} className="view-all-link">
+            View All ({products.length}) →
+          </Link>
+        </div>
+
+        <div className="products-grid">
+          {featuredProducts.map((product) => {
+            const id = product.productId ?? product.id;
+            const priceFormatted = Number(product.productPrice).toLocaleString("en-PK");
+            return (
+              <div key={id} className="modern-product-card">
+                <div
+                  className="card-media-wrapper"
+                  onClick={() => navigate(`${BASE}/products/${id}`)}
+                >
+                  <span className="product-category-tag">{product.category}</span>
+                  {product.productImage ? (
+                    <img
+                      src={product.productImage}
+                      alt={product.productName}
+                      className="product-thumbnail"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div className="product-image-fallback">
+                      <span>📦</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="card-details">
+                  <div className="rating-row">
+                    <span className="rating-stars">★★★★★</span>
+                    <span className="rating-score">4.9</span>
+                  </div>
+
+                  <h3
+                    className="product-title"
+                    onClick={() => navigate(`${BASE}/products/${id}`)}
+                  >
+                    {product.productName}
+                  </h3>
+
+                  <p className="product-desc">{product.productDescription}</p>
+
+                  <div className="card-footer">
+                    <div className="price-block">
+                      <span className="price-label">Price</span>
+                      <span className="product-price">Rs. {priceFormatted}</span>
+                    </div>
+                    <button
+                      className="quick-add-btn"
+                      onClick={() => handleAddToCart(product)}
+                      title="Add to Cart"
+                    >
+                      <span className="cart-btn-icon">🛒</span>
+                      <span>Add</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Recent Orders Section (if any) */}
+      {recentOrders.length > 0 && (
+        <section className="recent-orders-section">
+          <div className="section-header">
+            <div>
+              <h2 className="section-title">Recent Orders</h2>
+              <p className="section-subtitle">Track your recent orders and delivery status</p>
+            </div>
+            <Link to={`${BASE}/orders`} className="view-all-link">
+              All Orders ({myOrders.length}) →
+            </Link>
+          </div>
+
+          <div className="orders-summary-list">
+            {recentOrders.map((order) => (
+              <Link
+                key={order.orderId}
+                to={`${BASE}/orderDetails/${order.orderId}`}
+                className="order-summary-row"
+              >
+                <div className="order-main-info">
+                  <span className="order-id">Order #{order.orderId}</span>
+                  <span className="order-items-count">
+                    {order.bucket?.length || 0} item(s) • Total: Rs.{" "}
+                    {Number(order.totalAmount || 0).toLocaleString("en-PK")}
+                  </span>
+                </div>
+                <div className="order-status-badge">
+                  <span className={`status-pill status-${(order.status || "Pending").toLowerCase()}`}>
+                    ● {order.status || "Pending"}
+                  </span>
+                  <span className="order-chevron">→</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 };

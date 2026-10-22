@@ -24,5 +24,6 @@ const authSlice = createSlice({
 
 // Ye action creators hain, inhe dispatch(addToCart(...)) jaise use karte hain
 export const { setUser, clearUser } = authSlice.actions
+export const logout = clearUser
 
 export default authSlice.reducer

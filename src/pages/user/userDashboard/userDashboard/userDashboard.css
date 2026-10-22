@@ -1,125 +1,94 @@
-* {
-  box-sizing: border-box;
-}
-
-/* Layout: left me sidebar, right me content */
+/* Layout: Left sidebar, Right main content */
 .user-layout {
   display: flex;
   min-height: 100vh;
-  background: #f3f4f6;
+  background-color: var(--bg-main, #0b0f19);
+  color: var(--text-main, #f8fafc);
 }
 
-/* Sidebar ke liye 250px ki jagah reserve */
 .user-sidebar-wrapper {
-  width: 250px;
+  width: 260px;
   flex-shrink: 0;
 }
 
-/* Sidebar hamesha wrapper ke andar rahe, scroll par bhi upar chipki rahe */
-.user-sidebar-wrapper .user-sidebar {
-  position: sticky;
-  top: 0;
-  width: 250px;
-  height: 100vh;
-}
-
-/* Right side content */
 .user-main {
   flex: 1;
   min-width: 0;
   min-height: 100vh;
-  padding: 16px;
-  overflow-x: auto;
+  padding: 28px 36px;
+  overflow-y: auto;
 }
 
-
-/* Mobile ke elements, desktop par hidden */
-
+/* Mobile Topbar & Overlays */
 .user-mobile-topbar,
 .user-sidebar-close,
 .user-sidebar-overlay {
   display: none;
 }
 
-
-/* Mobile */
-
-@media (max-width: 768px) {
-
+@media (max-width: 860px) {
   .user-main {
-    padding: 20px;
+    padding: 18px 16px;
   }
 
-  /* Sidebar wrapper: screen ke bahar chhupa hua */
   .user-sidebar-wrapper {
     position: fixed;
     top: 0;
     left: 0;
-    width: 250px;
+    width: 260px;
     height: 100vh;
     z-index: 1000;
     transform: translateX(-100%);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  /* Open hone par andar aa jaye */
   .user-sidebar-wrapper.open {
     transform: translateX(0);
   }
 
-  /* Close (✕) button */
   .user-sidebar-close {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: absolute;
-    top: 12px;
-    right: 10px;
-    z-index: 10;
-    background: transparent;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
     border: none;
-    color: white;
-    font-size: 22px;
+    border-radius: 50%;
     cursor: pointer;
+    z-index: 1010;
   }
 
-  /* Dark overlay */
   .user-sidebar-overlay {
     display: block;
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
     z-index: 999;
   }
 
-  /* Top bar with menu button */
   .user-mobile-topbar {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #111827;
+    gap: 14px;
+    padding: 12px 16px;
+    margin: -18px -16px 20px;
+    background: #111827;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   }
 
   .user-menu-btn {
-    background: #2563eb;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #fff;
     padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 18px;
     cursor: pointer;
   }
-
-}
-
-
-/* Chhoti mobile */
-
-@media (max-width: 500px) {
-
-  .user-main {
-    padding: 15px;
-  }
-
 }

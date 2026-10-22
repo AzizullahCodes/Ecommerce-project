@@ -1,116 +1,193 @@
-.user-sidebar {
-  width: 250px;
+.user-sidebar-container {
+  width: 260px;
   min-height: 100vh;
-  background: #1e1e2f;
-  color: #fff;
+  background: #111827;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
   position: sticky;
   top: 0;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.35);
+  user-select: none;
 }
 
-.sidebar-logo {
-  padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-logo h2 {
-  margin: 0;
-  font-size: 20px;
-  color: #fff;
-}
-
-.sidebar-nav {
+/* Brand */
+.user-sidebar-brand {
+  padding: 22px 20px;
   display: flex;
-  flex-direction: column;
-  padding: 10px;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+}
+
+.brand-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #6366f1, #4f46e5);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.35);
+}
+
+.brand-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.brand-tagline {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #818cf8;
+}
+
+/* User Card */
+.user-sidebar-profile {
+  margin: 16px 14px 8px;
+  padding: 12px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
   gap: 12px;
 }
 
-.sidebar-link {
-  padding: 12px 15px;
-  border-radius: 8px;
-  color: #cfcfcf;
-  text-decoration: none;
-  font-size: 14px;
-  transition: 0.2s;
+.profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
   display: flex;
   align-items: center;
-  gap: 10px;
-  position: relative;
-  overflow: visible;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
 }
 
-.sidebar-link:hover {
-  background: rgba(255, 255, 255, 0.08);
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #f1f5f9;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.profile-status {
+  font-size: 11px;
+  color: #10b981;
+  font-weight: 500;
+}
+
+/* Nav */
+.user-sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 14px;
+  gap: 6px;
+  flex: 1;
+}
+
+.nav-group-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  padding: 8px 10px 4px;
+}
+
+.user-sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  color: #94a3b8;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+}
+
+.user-sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.05);
   color: #fff;
+  transform: translateX(2px);
 }
 
-.sidebar-link.active {
-  background: #4f46e5;
+.user-sidebar-link.active {
+  background: linear-gradient(90deg, #6366f1, #4f46e5);
   color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-/* Yahan position relative lagayi taake badge text k reference se set ho */
-.sidebar-link-label {
-  position: relative;
-  display: inline-block;
-  padding-right: 5px; /* Thori space taake badge aur text overlap na karein */
+.nav-item-icon {
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Cart badge — ab yeh text ke top-right par fix rahega */
-.cart-badge {
-  position: absolute;
-  top: -12px;
-  right: -15px;
-  min-width: 22px;
-  height: 22px;
-  padding: 0 6px;
-  border-radius: 11px;
+.nav-item-text {
+  flex: 1;
+}
+
+.nav-cart-badge {
   background: #ef4444;
   color: #fff;
   font-size: 11px;
   font-weight: 700;
-  line-height: 1;
-  display: inline-flex;
+  padding: 2px 7px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.5);
+  animation: pulseSubtle 2s infinite;
+}
+
+/* Footer / Logout */
+.user-sidebar-footer {
+  padding: 16px 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.user-logout-button {
+  width: 100%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-  pointer-events: none;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.sidebar-link.active .cart-badge {
+.user-logout-button:hover {
   background: #ef4444;
   color: #fff;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .user-sidebar {
-    width: 70px;
-  }
-
-  .sidebar-logo h2 {
-    display: none;
-  }
-
-  .sidebar-link {
-    text-align: center;
-    font-size: 18px;
-    justify-content: center;
-  }
-
-  /* Chhote sidebar me label font size aur badge adjust kiya */
-  .sidebar-link-label {
-    font-size: 12px;
-  }
-
-  .cart-badge {
-    top: -10px;
-    right: -15px;
-    min-width: 18px;
-    height: 18px;
-    padding: 0 4px;
-    font-size: 10px;
-  }
+  border-color: #ef4444;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
 }

@@ -1,20 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { deleteProduct, restoreDefaultProducts } from '../../../../store/slices/products/productsSlice.js';
 import { showConfirm, showSuccess } from '../../../../utils/sweetAlert.js';
 import './allProducts.css';
-import {
-  MDBCard,
-  MDBCardBody,
-  MDBCardTitle,
-  MDBCardText,
-  MDBCardImage,
-  MDBBtn,
-  MDBRipple,
-  MDBRow,
-  MDBCol
-} from 'mdb-react-ui-kit';
 
 const AllProducts = () => {
   const dispatch = useDispatch();
@@ -22,16 +11,21 @@ const AllProducts = () => {
   const products = useSelector((state) => state.products.items);
   const deletedIds = useSelector((state) => state.products.deletedIds);
   const [search, setSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('All');
+
+  const categories = ['All', ...new Set(products.map((p) => p.category).filter(Boolean))];
 
   const filteredProducts = products.filter((product) => {
     const text = search.trim().toLowerCase();
-    if (!text) return true;
-    return (
+    const matchesCategory = categoryFilter === 'All' || product.category === categoryFilter;
+    const matchesSearch =
+      !text ||
       (product.productName || '').toLowerCase().includes(text) ||
       (product.productDescription || '').toLowerCase().includes(text) ||
       String(product.productPrice || '').toLowerCase().includes(text) ||
-      (product.category || '').toLowerCase().includes(text)
-    );
+      (product.category || '').toLowerCase().includes(text);
+
+    return matchesCategory && matchesSearch;
   });
 
   const handleDelete = async (productId) => {
@@ -43,6 +37,7 @@ const AllProducts = () => {
 
     if (confirmed) {
       dispatch(deleteProduct(productId));
+      await showSuccess('Deleted', 'Product was removed successfully');
     }
   };
 
@@ -60,79 +55,126 @@ const AllProducts = () => {
   };
 
   return (
-    <div className="all-products-page">
-      <h1>Manage Products</h1>
-
-      <div style={{ marginBottom: 16, maxWidth: 360 }}>
-        <input
-          type="text"
-          placeholder="Search products"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          style={{ width: '100%', padding: 8 }}
-        />
+    <div className="admin-inventory-container">
+      {/* Header */}
+      <div className="admin-inventory-header">
+        <div>
+          <h1 className="admin-page-title">Product Inventory</h1>
+          <p className="admin-page-subtitle">
+            Manage your store catalog, edit prices, monitor stock, and add items
+          </p>
+        </div>
+        <Link to="/adminDashboard/products/addProduct" className="admin-add-new-btn">
+          <span>+ Add New Product</span>
+        </Link>
       </div>
 
-      {/* Default products delete hue hon to wapas laane ka option */}
+      {/* Restore Banner if any defaults were deleted */}
       {deletedIds.length > 0 && (
-        <div style={{ marginBottom: 16 }}>
-          <MDBBtn color="warning" onClick={handleRestoreDefaults}>
-            Restore {deletedIds.length} default product(s)
-          </MDBBtn>
+        <div className="restore-defaults-alert">
+          <div>
+            <strong>Default products are hidden.</strong>
+            <span> {deletedIds.length} original item(s) have been deleted.</span>
+          </div>
+          <button className="restore-btn" onClick={handleRestoreDefaults}>
+            Restore {deletedIds.length} Default Product(s)
+          </button>
         </div>
       )}
 
+      {/* Search & Filter Toolbar */}
+      <div className="inventory-toolbar">
+        <div className="search-box">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            placeholder="Search products by title, price, category..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="inventory-search-input"
+          />
+          {search && (
+            <button className="clear-btn" onClick={() => setSearch('')}>
+              ✕
+            </button>
+          )}
+        </div>
+
+        <div className="filter-box">
+          <label>Category:</label>
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="inventory-filter-select"
+          >
+            {categories.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Product Cards Grid */}
       {filteredProducts.length > 0 ? (
-        <MDBRow>
-          {filteredProducts.map((product) => (
-            <MDBCol sm="4" key={product.productId ?? product.id} className="mb-4">
-              <MDBCard>
-                <MDBRipple rippleColor="light" rippleTag="div" className="bg-image hover-overlay">
+        <div className="inventory-grid">
+          {filteredProducts.map((product) => {
+            const id = product.productId ?? product.id;
+            const priceFormatted = Number(product.productPrice).toLocaleString('en-PK');
+
+            return (
+              <div key={id} className="inventory-card">
+                <div className="inventory-media">
+                  <span className="inventory-cat-tag">{product.category || 'Item'}</span>
                   {product.productImage ? (
-                    <MDBCardImage
+                    <img
                       src={product.productImage}
-                      fluid
                       alt={product.productName}
-                      style={{ height: 100, width: 80, objectFit: 'contain' }}
+                      className="inventory-img"
                     />
                   ) : (
-                    <div style={{ height: 100, width: 80, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      No image
-                    </div>
+                    <div className="inventory-fallback-img">📦</div>
                   )}
-                </MDBRipple>
-                <MDBCardBody>
-                  <MDBCardTitle>{product.productName}</MDBCardTitle>
-                  <MDBCardText>{product.productDescription}</MDBCardText>
-                  <MDBCardText>Price: {product.productPrice} PKR</MDBCardText>
-                  {product.category && <MDBCardText>Category: {product.category}</MDBCardText>}
-                  <div style={{ display: 'flex', gap: 8, marginTop: 8 }}>
-                    <MDBBtn
-                      size="sm"
-                      onClick={() => navigate(`/adminDashboard/products/editProduct/${product.productId ?? product.id}`)}
-                    >
-                      Edit
-                    </MDBBtn>
-                    <MDBBtn
-                      size="sm"
-                      color="danger"
-                      onClick={() => handleDelete(product.productId ?? product.id)}
-                    >
-                      Delete
-                    </MDBBtn>
-                  </div>
-                </MDBCardBody>
-              </MDBCard>
-            </MDBCol>
-          ))}
-        </MDBRow>
-      ) : (
-        <h1>No products found</h1>
-      )}
+                </div>
 
-      <div className="d-grid gap-2 col-6 mx-auto mt-3">
-        <MDBBtn onClick={() => navigate('/adminDashboard/products/addProduct')}>Add New Product</MDBBtn>
-      </div>
+                <div className="inventory-card-body">
+                  <h3 className="inventory-title">{product.productName}</h3>
+                  <p className="inventory-desc">{product.productDescription}</p>
+
+                  <div className="inventory-price-row">
+                    <span className="inventory-price">Rs. {priceFormatted} PKR</span>
+                    <span className="inventory-stock-pill">In Stock</span>
+                  </div>
+
+                  <div className="inventory-card-actions">
+                    <button
+                      className="edit-action-btn"
+                      onClick={() =>
+                        navigate(`/adminDashboard/products/editProduct/${id}`)
+                      }
+                    >
+                      ✏️ Edit
+                    </button>
+                    <button
+                      className="delete-action-btn"
+                      onClick={() => handleDelete(id)}
+                    >
+                      🗑️ Delete
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="inventory-empty-card">
+          <span className="empty-icon">📦</span>
+          <h2>No products match your criteria</h2>
+          <p>Try modifying your search query or category filter.</p>
+        </div>
+      )}
     </div>
   );
 };

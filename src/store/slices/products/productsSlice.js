@@ -21,7 +21,16 @@ const buildCatalog = (savedProducts, deletedIds) => {
     if (deletedIds.includes(product.productId)) {
       continue
     }
-    catalog.push(savedById.get(product.productId) ?? product)
+    const saved = savedById.get(product.productId)
+    if (saved) {
+      catalog.push({
+        ...product,
+        ...saved,
+        productImage: saved.productImage && saved.productImage.trim() !== '' ? saved.productImage : product.productImage,
+      })
+    } else {
+      catalog.push(product)
+    }
   }
 
   for (const product of savedProducts) {

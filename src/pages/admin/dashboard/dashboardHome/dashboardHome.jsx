@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 import './dashboardHome.css';
 
 const DashboardHome = () => {
@@ -7,60 +8,110 @@ const DashboardHome = () => {
   const users = useSelector((state) => state.users.items);
   const orders = useSelector((state) => state.orders.items);
 
-  const revenue = orders.reduce((sum, order) => sum + Number(order.totalPrice || 0), 0);
+  const revenue = orders.reduce((sum, order) => sum + Number(order.totalPrice || order.totalAmount || 0), 0);
   const recentOrders = [...orders].reverse().slice(0, 5);
 
   return (
-    <div className="dashboard-home">
+    <div className="dashboard-container">
+      {/* Header */}
       <div className="dashboard-header">
         <div>
-          <h1>Admin Dashboard</h1>
-          <p>Overview of your store</p>
+          <h1 className="admin-page-title">Executive Dashboard</h1>
+          <p className="admin-page-subtitle">Real-time performance metrics and store management</p>
+        </div>
+        <div className="dashboard-header-actions">
+          <Link to="/adminDashboard/products/addProduct" className="admin-quick-add">
+            + Add Product
+          </Link>
         </div>
       </div>
 
-      <div className="dashboard-cards">
-        <div className="dashboard-card">
-          <div>
-            <p>Total Products</p>
-            <h2>{products.length}</h2>
+      {/* KPI Stats Cards */}
+      <div className="kpi-grid">
+        <div className="kpi-card">
+          <div className="kpi-icon-box kpi-products">🛍️</div>
+          <div className="kpi-info">
+            <span className="kpi-label">Total Catalog Products</span>
+            <h2 className="kpi-value">{products.length}</h2>
           </div>
         </div>
 
-        <div className="dashboard-card">
-          <div>
-            <p>Total Users</p>
-            <h2>{users.length}</h2>
+        <div className="kpi-card">
+          <div className="kpi-icon-box kpi-revenue">💰</div>
+          <div className="kpi-info">
+            <span className="kpi-label">Total Store Revenue</span>
+            <h2 className="kpi-value">Rs. {revenue.toLocaleString('en-PK')}</h2>
           </div>
         </div>
 
-        <div className="dashboard-card">
-          <div>
-            <p>Total Orders</p>
-            <h2>{orders.length}</h2>
+        <div className="kpi-card">
+          <div className="kpi-icon-box kpi-orders">📦</div>
+          <div className="kpi-info">
+            <span className="kpi-label">Total Customer Orders</span>
+            <h2 className="kpi-value">{orders.length}</h2>
           </div>
         </div>
 
-        <div className="dashboard-card">
-          <div>
-            <p>Total Revenue</p>
-            <h2>{revenue} PKR</h2>
+        <div className="kpi-card">
+          <div className="kpi-icon-box kpi-users">👥</div>
+          <div className="kpi-info">
+            <span className="kpi-label">Registered Users</span>
+            <h2 className="kpi-value">{users.length}</h2>
           </div>
         </div>
       </div>
 
-      <div className="dashboard-panel">
-        <h3>Recent Orders</h3>
+      {/* Recent Orders Section */}
+      <div className="dashboard-section-card">
+        <div className="card-header-row">
+          <div>
+            <h3 className="card-title">Recent Customer Orders</h3>
+            <p className="card-subtitle">Latest orders placed across the store</p>
+          </div>
+          <Link to="/adminDashboard/orders" className="view-more-link">
+            View All Orders ({orders.length}) →
+          </Link>
+        </div>
+
         {recentOrders.length === 0 ? (
-          <p>No orders yet.</p>
+          <div className="orders-empty-box">
+            <span>📦</span>
+            <p>No customer orders placed yet.</p>
+          </div>
         ) : (
-          <ul>
-            {recentOrders.map((order) => (
-              <li key={order.orderId ?? order.id}>
-                #{order.orderId ?? order.id} - {order.customerName || order.userId || "N/A"} - {order.totalPrice || 0} PKR - {order.status || "Pending"}
-              </li>
-            ))}
-          </ul>
+          <div className="recent-orders-table">
+            <div className="table-head">
+              <span>Order ID</span>
+              <span>Customer</span>
+              <span>Items</span>
+              <span>Total Amount</span>
+              <span>Status</span>
+              <span>Action</span>
+            </div>
+            {recentOrders.map((order) => {
+              const id = order.orderId ?? order.id;
+              const total = Number(order.totalPrice || order.totalAmount || 0).toLocaleString('en-PK');
+              const statusClass = (order.status || 'Pending').toLowerCase();
+              return (
+                <div key={id} className="table-row">
+                  <span className="row-order-id">#{id}</span>
+                  <span className="row-customer">
+                    {order.customerName || order.shippingAddress?.name || order.userId || 'Customer'}
+                  </span>
+                  <span className="row-items">{order.bucket?.length || 1} item(s)</span>
+                  <span className="row-total">Rs. {total}</span>
+                  <span>
+                    <span className={`status-pill status-${statusClass}`}>
+                      ● {order.status || 'Pending'}
+                    </span>
+                  </span>
+                  <Link to={`/adminDashboard/orders/${id}`} className="row-action-link">
+                    Manage →
+                  </Link>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>
