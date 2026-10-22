@@ -35,12 +35,19 @@ const Signup = () => {
       await showError('Invalid name', 'Name must be at least 2 characters');
       return;
     }
+    
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
       await showError('Invalid email', 'Please enter a valid email address');
       return;
     }
-    if (password.length < 6) {
-      await showError('Weak password', 'Password must be at least 6 characters');
+
+    // New Strong Password Validation
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      await showError(
+        'Weak password', 
+        'Password must be at least 8 characters long and include an uppercase, a lowercase, a number, and a special character.'
+      );
       return;
     }
 
@@ -96,7 +103,7 @@ const Signup = () => {
           </select>
         </label>
 
-        <button type="submit" className="signup-btn">
+        <button type='submit' className="signup-btn">
           Register
         </button>
 
