@@ -413,6 +413,9 @@
   gap: 2px;
 }
 
+.itemTotal, .itemTotalPrice{
+  color : white !important
+}
 .item-name {
   font-size: 13px;
   font-weight: 600;
@@ -430,7 +433,7 @@
 .item-price {
   font-size: 13px;
   font-weight: 700;
-  color: var(--accent);
+  color: var(--accent); 
   white-space: nowrap;
 }
 
@@ -446,7 +449,8 @@
   display: flex;
   justify-content: space-between;
   font-size: 14px;
-  color: var(--muted);
+   color: var(--muted); 
+ 
 }
 
 .summary-total {

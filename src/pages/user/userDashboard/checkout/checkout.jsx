@@ -288,15 +288,15 @@ const CheckOut = () => {
 
               <div className="summary-totals">
                 <div className="summary-row">
-                  <span>Items Total</span>
-                  <span>{price} PKR</span>
+                  <span className='itemTotal'>Items Total</span>
+                  <span className='itemTotal'>{price} PKR</span>
                 </div>
                 <div className="summary-row">
-                  <span>Delivery Charges</span>
-                  <span>{deliveryCharges} PKR</span>
+                  <span className='itemTotal'>Delivery Charges</span>
+                  <span className='itemTotal'>{deliveryCharges} PKR</span>
                 </div>
                 <div className="summary-row summary-total">
-                  <span>Grand Total</span>
+                  <span className='itemTotal'>Grand Total</span>
                   <span>{grandTotal} PKR</span>
                 </div>
               </div>
