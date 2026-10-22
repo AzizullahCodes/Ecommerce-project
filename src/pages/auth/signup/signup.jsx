@@ -1,5 +1,5 @@
-import { useDispatch, useSelector } from 'react-redux';
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { addUser } from '../../../store/slices/users/usersSlice.js';
 import { showError, showSuccess } from '../../../utils/sweetAlert.js';
@@ -9,7 +9,9 @@ const Signup = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [role, setRole] = useState('user');
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const users = useSelector((state) => state.users.items);
@@ -41,7 +43,7 @@ const Signup = () => {
       return;
     }
 
-    // New Strong Password Validation
+    // Strong Password Validation
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     if (!passwordRegex.test(password)) {
       await showError(
@@ -86,13 +88,24 @@ const Signup = () => {
 
         <label className="field">
           Password
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="new-password"
-          />
+          <div className="password-input-wrapper">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="new-password"
+            />
+            <button
+              type="button"
+              className="password-toggle-btn"
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              title={showPassword ? 'Hide password' : 'Show password'}
+            >
+              <i className={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}></i>
+            </button>
+          </div>
         </label>
 
         <label className="field">
@@ -103,7 +116,7 @@ const Signup = () => {
           </select>
         </label>
 
-        <button type='submit' className="signup-btn">
+        <button type="submit" className="signup-btn">
           Register
         </button>
 

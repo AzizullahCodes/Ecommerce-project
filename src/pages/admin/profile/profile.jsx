@@ -1,8 +1,10 @@
-import { useDispatch, useSelector } from 'react-redux';
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-import { clearUser } from "../../../store/slices/auth/authSlice";
+import { clearUser } from "../../../store/slices/auth/authSlice.js";
+import { deleteUser } from "../../../store/slices/users/usersSlice.js";
+import { showConfirm, showSuccess } from "../../../utils/sweetAlert.js";
 import "./Profile.css";
 
 const AdminProfile = () => {
@@ -19,6 +21,9 @@ const AdminProfile = () => {
         <div className="admin-profile-empty">
           <h2>Profile Not Found</h2>
           <p>Please log in to view your profile.</p>
+          <button className="admin-profile-logout" onClick={() => navigate("/login", { replace: true })}>
+            Go to Login
+          </button>
         </div>
       </div>
     );
@@ -30,6 +35,42 @@ const AdminProfile = () => {
   const handleLogout = () => {
     dispatch(clearUser());
     Cookies.remove("myApp_login", { path: "/" });
+    navigate("/login", { replace: true });
+  };
+
+  // Delete account with confirmation
+  const deleteAccount = async () => {
+    const confirmed = await showConfirm(
+      "Delete Admin Account?",
+      "Are you sure you want to permanently delete your admin account? This action cannot be undone.",
+      "Yes, Delete Account"
+    );
+
+    if (!confirmed) return;
+
+    // Remove from Redux users list and clear auth state
+    dispatch(deleteUser({ email: user.email, role: user.role }));
+    dispatch(clearUser());
+    Cookies.remove("myApp_login", { path: "/" });
+
+    // Fallback sync with localStorage
+    try {
+      const storedUsers = localStorage.getItem("users");
+      if (storedUsers) {
+        const jsonUsers = JSON.parse(storedUsers);
+        const requiredIndex = jsonUsers.findIndex(
+          (item) => item.email === user.email && item.role === user.role
+        );
+        if (requiredIndex !== -1) {
+          jsonUsers.splice(requiredIndex, 1);
+          localStorage.setItem("users", JSON.stringify(jsonUsers));
+        }
+      }
+    } catch (err) {
+      console.error("Error updating users in localStorage:", err);
+    }
+
+    await showSuccess("Account Deleted", "Your admin account has been deleted successfully.");
     navigate("/login", { replace: true });
   };
 
@@ -59,7 +100,7 @@ const AdminProfile = () => {
             <p>Users</p>
           </div>
           <div>
-            <h3>{revenue} PKR</h3>
+            <h3>{revenue.toLocaleString()} PKR</h3>
             <p>Revenue</p>
           </div>
         </div>
@@ -83,9 +124,25 @@ const AdminProfile = () => {
           </div>
         </div>
 
+        {/* Danger Zone */}
+        <div className="admin-danger-card">
+          <div className="admin-danger-content">
+            <div className="admin-danger-icon">
+              <i className="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div className="admin-danger-text">
+              <h3>Danger Zone</h3>
+              <p>Permanently delete this administrator account and permissions. This action cannot be undone.</p>
+            </div>
+          </div>
+          <button className="admin-profile-delete-btn" onClick={deleteAccount}>
+            <i className="fa-solid fa-trash-can"></i> Delete Account
+          </button>
+        </div>
+
         <div className="admin-profile-actions">
           <button className="admin-profile-logout" onClick={handleLogout}>
-            Logout
+            <i className="fa-solid fa-right-from-bracket"></i> Logout
           </button>
         </div>
       </div>

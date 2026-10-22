@@ -51,6 +51,46 @@
   padding: 12px 14px !important;
   color: #fff !important;
   font-size: 14px !important;
+  box-sizing: border-box;
+}
+
+/* Password input with eye toggle */
+.password-input-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-wrapper input {
+  padding-right: 44px !important;
+}
+
+.password-toggle-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  transition: color 0.2s ease;
+  z-index: 2;
+}
+
+.password-toggle-btn:hover {
+  color: #818cf8;
+}
+
+.password-toggle-btn:focus {
+  outline: none;
+  color: #a5b4fc;
 }
 
 .signup-btn {
@@ -73,6 +113,7 @@
   transform: translateY(-2px);
 }
 
+.auth-switch,
 .footer-text {
   text-align: center;
   margin-top: 22px;
@@ -80,7 +121,14 @@
   color: #94a3b8;
 }
 
+.auth-switch a,
 .footer-text a {
   color: #818cf8;
   font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-switch a:hover,
+.footer-text a:hover {
+  text-decoration: underline;
 }

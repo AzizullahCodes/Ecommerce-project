@@ -14,9 +14,16 @@ const usersSlice = createSlice({
     addUser: (state, action) => {
       state.items.push(action.payload)
     },
+    // User delete karne ke liye
+    deleteUser: (state, action) => {
+      const { email, role } = action.payload
+      state.items = state.items.filter(
+        (item) => !(item.email === email && (!role || item.role === role))
+      )
+    },
   },
 })
 
-export const { addUser } = usersSlice.actions
+export const { addUser, deleteUser } = usersSlice.actions
 
 export default usersSlice.reducer

@@ -1,6 +1,5 @@
-import { useDispatch, useSelector } from 'react-redux';
-
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import { setUser } from '../../../store/slices/auth/authSlice.js';
@@ -10,6 +9,7 @@ import './login.css';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -82,13 +82,24 @@ const Login = () => {
 
         <label className="field">
           Password
-          <input
-            type="password"
-            placeholder="Enter your password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-          />
+          <div className="password-input-wrapper">
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              autoComplete="current-password"
+            />
+            <button
+              type="button"
+              className="password-toggle-btn"
+              onClick={() => setShowPassword((prev) => !prev)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              title={showPassword ? 'Hide password' : 'Show password'}
+            >
+              <i className={showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'}></i>
+            </button>
+          </div>
         </label>
 
         <button type="submit" className="signup-btn">
@@ -104,5 +115,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
